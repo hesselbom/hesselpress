@@ -1,0 +1,6 @@
+extends _base
+block body
+  .admin-links: a(href='/admin') &laquo; Admin
+  h1 Are you sure you want to delete: #{data.post.title}?
+  form(method='post')
+    input(type='submit', value='Delete')

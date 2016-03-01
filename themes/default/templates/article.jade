@@ -1,0 +1,17 @@
+extends _base
+block body
+  time #{post.date}
+  | !{post.content}
+
+  #disqus_thread.comments
+  script.
+    var disqus_config = function () {
+      this.page.url = '#{post.canonical}';
+      this.page.identifier = '#{post.slug}';
+    };
+    (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = '//hesselboom.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();

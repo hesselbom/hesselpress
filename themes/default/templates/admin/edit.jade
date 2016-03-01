@@ -1,0 +1,40 @@
+extends _base
+block scripts
+  script(src="//cdn.tinymce.com/4/tinymce.min.js")
+  script.
+    tinymce.init({
+      selector: 'textarea',
+      content_css: '/static/css/editor.css',
+      menubar: false,
+      plugins: 'link image code',
+      toolbar: 'styleselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist | link unlink image | code'
+    });
+
+block body
+  .admin-links: a(href='/admin') &laquo; Admin
+  h1 Edit post
+  if data.saved
+    p.success Saved!
+  form(method='post')
+    if data.templates.length > 1
+      label Template
+        select(name='template')
+          each template in data.templates
+            option(value=template, selected=(data.post.template==template)) #{template.charAt(0).toUpperCase() + template.slice(1)}
+    else
+      input(type='hidden', name='template', value=data.templates[0])
+    .grid
+      .half
+        label Date
+          input(type='text', name='date', value=data.post.date)
+      .half
+        label Slug
+          input(type='text', name='slug', value=data.post.slug)
+    label Title
+      input(type='text', name='title', value=data.post.title)
+    label Content
+      textarea(name='content', rows='20') #{data.post.content}
+    div.submit
+      p: input(type='submit', value='Save')
+      if !data.isnew
+        p.extra: a.delete(href='/admin/delete/'+data.post.slug) Delete

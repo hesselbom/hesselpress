@@ -1,0 +1,12 @@
+{
+  "config": {
+    "theme": "default",
+    "domain": "localhost:3000",
+    "secret": "hesselpress",
+    "template404": "_404",
+    "username": "admin",
+    "password": "admin"
+  },
+  "posts": [
+  ]
+}

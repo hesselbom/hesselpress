@@ -1,0 +1,23 @@
+doctype html
+html
+  head
+    title= post.title
+    link(href='/static/css/normalize.css', rel='stylesheet')
+    link(href='/static/css/style.css', rel='stylesheet')
+  body
+    .container._big
+      h1= post.title
+
+      .content
+        block body
+
+      section.sidebar
+        h3 Pages
+        ul.unstyled
+          each p in posts
+            li
+              a(href='/'+p.slug) #{p.title}
+              | 
+              span.disqus-comment-count(data-disqus-identifier=p.slug)
+
+    script#dsq-count-scr(src="//hesselboom.disqus.com/count.js", async)

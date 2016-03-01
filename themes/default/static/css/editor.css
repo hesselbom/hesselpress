@@ -1,0 +1,45 @@
+@font-face {
+  font-family: 'Essays 1743';
+  src: url('../fonts/Essays1743.eot?') format('eot'), url('../fonts/Essays1743.woff') format('woff'), url('../fonts/Essays1743.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Essays 1743';
+  font-weight: bold;
+  src: url('../fonts/Essays1743-bold.eot?') format('eot'), url('../fonts/Essays1743-bold.woff') format('woff'), url('../fonts/Essays1743-bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Essays 1743';
+  font-style: italic;
+  src: url('../fonts/Essays1743-italic.eot?') format('eot'), url('../fonts/Essays1743-italic.woff') format('woff'), url('../fonts/Essays1743-italic.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Essays 1743';
+  font-style: italic;
+  font-weight: bold;
+  src: url('../fonts/Essays1743-bold-italic.eot?') format('eot'), url('../fonts/Essays1743-bold-italic.woff') format('woff'), url('../fonts/Essays1743-bold-italic.ttf') format('truetype');
+}
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 100%;
+  line-height: 1.6;
+  color: #444;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Essays 1743', sans-serif;
+  font-weight: normal;
+  line-height: 1.2;
+}
+
+h1 { font-size: 3em; }
+h2 { font-size: 2.375em; }
+h3 { font-size: 1.5em; }
+h4 { font-size: 1.125em; }
+h5 { font-size: 1em; }
+h6 { font-size: 0.75em; }
+
+h1, h2, h3, h4, h5, h6, p, ul { margin-top: 0 }
+
+a { color: #8598e8; transition: opacity 0.3s ease }
+a:hover { opacity: 0.7 }

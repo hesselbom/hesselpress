@@ -1,0 +1,8 @@
+extends _base
+block body
+  .admin-links: a(href='/admin/logout') Logout
+  h1 Admin
+  ul
+    each post in data.posts
+      li: a(href='/admin/edit/'+post.slug) #{post.title}
+  p: a(href='/admin/new') New post

@@ -5,4 +5,7 @@ block body
   ul
     each post in data.posts
       li: a(href='/admin/edit/'+post.slug) #{post.title}
-  p: a(href='/admin/new') New post
+  p
+    a(href='/admin/new') New post
+    |  &mdash; 
+    a(href='/admin/regenerate') Regenerate all

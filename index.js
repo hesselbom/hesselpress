@@ -78,9 +78,17 @@ function resPost(slug, res) {
   });
 }
 
-app.get('/generate', function(req, res) {
+app.get('/admin/regenerate', function(req, res) {
+  if (!req.session.loggedin) {
+    res.writeHead(302, { 'location': '/admin' });
+    return res.end();
+  }
+
   generateAllPosts(function() {
-    res.end('Generated');
+    res.end( jade.renderFile('themes/'+theme+'/templates/admin/regenerated.jade', { data: {
+      title: "Admin",
+      posts: db.object.posts
+    }}) );
   });
 });
 

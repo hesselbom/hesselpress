@@ -1,0 +1,9 @@
+extends _base
+block body
+  .admin-links: a(href='/admin') &laquo; Admin
+  h1 Regenerated all pages!
+  p Why not view one of them?
+  ul
+    each p in data.posts
+      li
+        a(href='/'+p.slug) #{p.title}

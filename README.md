@@ -1,7 +1,7 @@
 # Hesselpress
 Very simple blog tool with admin and static generated html files stored in Redis.
 
-Fast, safe, simple!
+Fast, safe, simple! Version 0.1.
 
 ## Prerequisite
 Needs redis installed and running.

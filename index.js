@@ -32,8 +32,6 @@ var templates = fs.readdirSync('themes/'+theme+'/templates')
 function generatePost(slug, cb) {
   var post = db('posts').find({ slug: slug });
 
-  post.canonical = 'http://'+db.object.config.domain+'/'+post.slug;
-
   var html = jade.renderFile('themes/'+theme+'/templates/'+post.template+'.jade', {
     post: post,
     posts: db.object.posts,
@@ -111,7 +109,8 @@ app.post('/admin/new', function(req, res) {
     slug: req.body.slug,
     date: req.body.date,
     title: req.body.title,
-    content: req.body.content
+    content: req.body.content,
+    canonical: 'http://'+db.object.config.domain+'/'+req.body.slug
   });
 
   generateAllPosts(function() {
@@ -127,7 +126,6 @@ app.get('/admin/new', function(req, res) {
   }
 
   var d = new Date();
-  console.log(d);
 
   res.end( jade.renderFile('themes/'+theme+'/templates/admin/edit.jade', { data: {
     title: "Admin",
@@ -184,6 +182,7 @@ app.post('/admin/edit/:slug?', function(req, res) {
   post.date = req.body.date;
   post.title = req.body.title;
   post.content = req.body.content;
+  post.canonical = 'http://'+db.object.config.domain+'/'+post.slug;
 
   generateAllPosts(function() {
     res.writeHead(302, { 'location': '/admin/edit/'+post.slug+'?saved' });

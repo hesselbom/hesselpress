@@ -36,7 +36,8 @@ function generatePost(slug, cb) {
 
   var html = jade.renderFile('themes/'+theme+'/templates/'+post.template+'.jade', {
     post: post,
-    posts: db.object.posts
+    posts: db.object.posts,
+    disqusid: db.object.config.disqusid
   });
 
   if (cb)

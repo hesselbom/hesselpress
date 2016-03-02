@@ -5,7 +5,8 @@
     "secret": "hesselpress",
     "template404": "_404",
     "username": "admin",
-    "password": "admin"
+    "password": "admin",
+    "disqusid": "xxx"
   },
   "posts": [
   ]

@@ -2,8 +2,9 @@ doctype html
 html
   head
     title= post.title
-    link(href='/static/css/normalize.css', rel='stylesheet')
-    link(href='/static/css/style.css', rel='stylesheet')
+    link(rel='stylesheet', href='/static/css/normalize.css')
+    link(rel='stylesheet', href='/static/css/style.css')
+    link(rel='canonical', href='#{post.canonical}')
   body
     .container._big
       h1= post.title

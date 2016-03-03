@@ -1,5 +1,6 @@
 {
   "config": {
+    "name": "Hesselpress",
     "theme": "default",
     "domain": "localhost:3000",
     "secret": "hesselpress",
@@ -9,5 +10,13 @@
     "disqusid": ""
   },
   "posts": [
+    {
+      "template": "home",
+      "date": "2016-01-01",
+      "slug": "",
+      "title": "Home",
+      "content": "<p>Welcome to my site!</p>",
+      "canonical": "http://localhost:3000/"
+    }
   ]
 }

@@ -1,6 +1,7 @@
 extends _base
-block scripts
-  script(src="//cdn.tinymce.com/4/tinymce.min.js")
+
+append scripts
+  script(src='/static/js/tinymce/tinymce.min.js')
   script.
     tinymce.init({
       selector: 'textarea',
@@ -11,33 +12,30 @@ block scripts
     });
 
 block body
-  .admin-links: a(href='/admin') &laquo; Admin
-  h1 Edit post
-  if data.saved
-    p.success Saved!
-  if !data.isnew
-    p View page: 
-      a(href=data.post.canonical) #{data.post.canonical}
-  form(method='post')
-    if data.templates.length > 1
-      label Template
-        select(name='template')
-          each template in data.templates
-            option(value=template, selected=(data.post.template==template)) #{template.charAt(0).toUpperCase() + template.slice(1)}
-    else
-      input(type='hidden', name='template', value=data.templates[0])
-    .grid
-      .half
-        label Date
-          input(type='date', name='date', value=data.post.date)
-      .half
-        label Slug
-          input(type='text', name='slug', value=data.post.slug)
-    label Title
-      input(type='text', name='title', value=data.post.title)
-    label Content
-      textarea(name='content', rows='20') #{data.post.content}
-    div.submit
-      p: input(type='submit', value='Save')
-      if !data.isnew
-        p.extra: a.delete(href='/admin/delete/'+data.post.slug) Delete
+  .edit-post
+    form(method='post')
+      label Title
+        input(type='text', name='title', value=data.post.title)
+      if data.templates.length > 1
+        label Template
+          select(name='template')
+            each template in data.templates
+              option(value=template, selected=(data.post.template==template)) #{template.charAt(0).toUpperCase() + template.slice(1)}
+      else
+        input(type='hidden', name='template', value=data.templates[0])
+      .grid-container
+        .half
+          label Date
+            input(type='date', name='date', value=data.post.date)
+        .half
+          label Slug
+            input(type='text', name='slug', value=data.post.slug)
+      label Content
+        textarea(name='content', rows='20') #{data.post.content}
+
+      .submit-block
+        if data.saved
+          span.info.success-color Saved!
+        if !data.isnew
+          a.delete-color(href='/admin/delete/'+data.post.slug) Delete
+        input.main-button(type='submit', value='Save')

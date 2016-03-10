@@ -3,8 +3,18 @@ html
   head
     title= data.title
     link(href='/static/css/normalize.css', rel='stylesheet')
-    link(href='/static/css/style.css', rel='stylesheet')
+    link(href='/static/css/admin.css', rel='stylesheet')
     block scripts
+      script(src='/static/js/modernizr.custom.js')
   body
-    .container
-      block body
+    block container
+      .admin-container
+        .menu
+          block menu
+            h2 Hesselpress
+            ul.block-menu
+              li(class=data.page == 'new'?'active':''): a(href='/admin/new') New Post
+              li(class=data.page == 'list'?'active':''): a(href='/admin/') Posts
+              li: a(href='/admin/logout') Logout
+        .content
+          block body

@@ -65,16 +65,11 @@ form label textarea { display: block; width: 100%; padding: 0.5em }
 
 time { display: block; color: #999; margin-bottom: 1em }
 
-.success { color: #389525 }
-.delete { color: #cd4747 }
-
 .grid { margin: 0 -0.5em }
 .grid .half { width: 50%; float: left; padding: 0 0.5em }
 
 .comments { margin-top: 8em }
 .disqus-comment-count { font-size: 0.85em; float: right }
-
-.admin-links { margin-bottom: 1em }
 
 @media screen and (max-width: 35em) {
   .content, .sidebar { width: 100% }

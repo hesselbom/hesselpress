@@ -1,11 +1,9 @@
 extends _base
 block body
-  .admin-links: a(href='/admin/logout') Logout
-  h1 Admin
-  ul
-    each post in data.posts
-      li: a(href='/admin/edit/'+post.slug) #{post.title}
-  p
-    a(href='/admin/new') New post
-    |  &mdash; 
-    a(href='/admin/regenerate') Regenerate all
+  .admin-page
+    h1 Posts
+    if data.posts.length > 0
+      ul.block-menu.-dynamicwidth
+        each post in data.posts
+          li: a(href='/admin/edit/'+post.slug) #{post.title}
+    p: a(href='/admin/new').main-button.-right New Post

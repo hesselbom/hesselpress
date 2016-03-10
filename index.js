@@ -138,6 +138,7 @@ app.get('/admin/new', function(req, res) {
 
   res.end( jade.renderFile('themes/'+theme+'/templates/admin/edit.jade', { data: {
     title: "Admin",
+    page: "new",
     post: { date: d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate() },
     templates: templates,
     saved: typeof req.query.saved !== 'undefined',
@@ -171,6 +172,7 @@ app.get('/admin/delete/:slug?', function(req, res) {
   if (post) {
     res.end( jade.renderFile('themes/'+theme+'/templates/admin/delete.jade', { data: {
       title: "Admin",
+      page: "delete",
       post: post
     }}) );
   }
@@ -209,6 +211,7 @@ app.get('/admin/edit/:slug?', function(req, res) {
   if (post) {
     res.end( jade.renderFile('themes/'+theme+'/templates/admin/edit.jade', { data: {
       title: "Admin",
+      page: "edit",
       post: post,
       templates: templates,
       saved: typeof req.query.saved !== 'undefined'
@@ -223,6 +226,7 @@ app.get('/admin', function(req, res) {
   if (req.session.loggedin) {
     res.end( jade.renderFile('themes/'+theme+'/templates/admin/list.jade', { data: {
       title: "Admin",
+      page: "list",
       posts: db.object.posts
     }}) );
   }

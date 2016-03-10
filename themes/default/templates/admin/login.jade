@@ -1,9 +1,10 @@
 extends _base
-block body
-  h1 Login
-  form(method='post')
-    label Username
-      input(type='text', name='username')
-    label Password
-      input(type='password', name='password')
-    input(type='submit', value='Login')
+block container
+  .form-container
+    h2.header Admin
+    form(method='post')
+      label Username
+        input(type='text', name='username')
+      label Password
+        input(type='password', name='password')
+      input.main-button.-right(type='submit', value='Login')

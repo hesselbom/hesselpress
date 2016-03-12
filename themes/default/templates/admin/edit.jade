@@ -23,17 +23,23 @@ block body
               option(value=template, selected=(data.post.template==template)) #{template.charAt(0).toUpperCase() + template.slice(1)}
       else
         input(type='hidden', name='template', value=data.templates[0])
-      .grid-container
-        .half
-          label Date
-            input(type='date', name='date', value=data.post.date)
-        .half
-          label Slug
-            input(type='text', name='slug', value=data.post.slug)
       label Content
         textarea(name='content', rows='20') #{data.post.content}
 
+      section.settings-menu
+        .content
+          h3 Settings
+          a.close.fa.fa-times
+          .grid-container
+            .half
+              label Date
+                input(type='date', name='date', value=data.post.date)
+            .half
+              label Slug
+                input(type='text', name='slug', value=data.post.slug, data-update-slug-from=data.isnew?'[name=title]':null)
+
       .submit-block
+        a(data-open='.settings-menu').fa.fa-cog.settings
         if data.saved
           span.info.success-color Saved!
         if !data.isnew

@@ -46,7 +46,7 @@ h6 { font-size: 0.75em; }
 
 h1, h2, h3, h4, h5, h6, p, ul { margin-top: 0 }
 
-a { color: #8598e8; transition: opacity 0.3s ease }
+a { color: #8598e8; transition: opacity 0.3s ease; cursor: pointer }
  a:hover { opacity: 0.7 }
 
 form label { display: block; margin-bottom: 1em }
@@ -59,34 +59,33 @@ form label > textarea { display: block; width: 100%; padding: 0.5em }
  .main-button.-delete { background: #cd4747 }
  .main-button.-right { float: right }
 
-.submit-block { text-align: right; position: absolute; bottom: 0; left: 0; right: 0; border-top: 1px solid #aaa; background: #eee; padding: 0.5em }
+.submit-block { text-align: right; position: absolute; bottom: 0; left: 0; right: 0; border-top: 1px solid #aaa; background: #eee; padding: 0.5em 1em }
  .submit-block > a,
  .submit-block > input { margin-left: 1em }
  .submit-block > .info { float: left; line-height: 2.25em }
+ .submit-block > .settings { float: left; line-height: 2.25em; margin-right: 1em; margin-left: 0 }
 
 .success-color { color: #389525 }
 .delete-color { color: #cd4747 }
 
-.grid-container { margin: 0 -0.5em }
- .grid-container > .half { width: 50%; float: left; padding: 0 0.5em }
+.settings-menu { }
+ .settings-menu > .content { background: #eee; border: 1px solid #aaa; padding: 1em }
+ .settings-menu > .content > .close { position: absolute; top: 1em; right: 1em }
+ .settings-menu > .content > .grid-container > .half:last-child > label:last-child { margin-bottom: 0 }
+.edit-post .settings-menu { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3) }
+ .edit-post .settings-menu.-visible { display: block }
+ .edit-post .settings-menu > .content { position: absolute; top: 50%; left: 1em; right: 1em; transform: translateY(-50%); margin-top: -2.25em }
 
-.admin-container { font-size: 0; overflow: hidden; height: 100% }
+.grid-container { margin: 0 -0.5em }
+.grid-container > .half { width: 50%; display: inline-block; vertical-align: top; padding: 0 0.5em }
+
+.admin-container { overflow: hidden; height: 100% }
  .admin-container > .menu,
- .admin-container > .content { font-size: 16px; font-size: 1rem; display: inline-block; vertical-align: top; height: 100%; position: relative }
+ .admin-container > .content { display: inline-block; vertical-align: top; height: 100%; position: relative }
  .admin-container > .menu { background: #dfdfdf; width: 15em; display: inline-block; border-right: 1px solid #aaa; overflow: auto; -webkit-overflow-scrolling: touch; text-align: center; padding: 2em 0 }
  .admin-container > .content { width: calc(100% - 15em) }
  .no-csscalc .admin-container > .menu { width: 30% }
  .no-csscalc .admin-container > .content { width: 60% }
-
-@media screen and (max-width: 45em) {
- .admin-container { overflow: visible }
- .admin-container > .menu,
- .admin-container > .content { width: 100%; height: auto }
- .admin-container > .menu { border-right: none; padding-bottom: 0; padding-top: 1em }
- .admin-container > .menu > h2 { margin-bottom: 0.5em }
- .admin-container > .menu > .block-menu { margin-bottom: 0 }
- .admin-container > .menu > .block-menu > li { width: 33.33%; display: inline-block; text-align: center; border-top: 1px solid #aaa }
-}
 
 .edit-post { height: 100%; padding: 3em 3em 5em 3em; overflow: auto; -webkit-overflow-scrolling: touch }
 .admin-page { height: 100%; padding: 3em; overflow: auto; -webkit-overflow-scrolling: touch }
@@ -102,3 +101,21 @@ form label > textarea { display: block; width: 100%; padding: 0.5em }
 
 .form-container { width: 20em; margin: 3em auto }
  .form-container > .header { text-align: center }
+
+@media screen and (max-width: 44em) {
+ .admin-container { overflow: visible }
+ .admin-container > .menu,
+ .admin-container > .content { width: 100%; height: auto }
+ .admin-container > .menu { border-right: none; padding-bottom: 0; padding-top: 1em }
+ .admin-container > .menu > h2 { margin-bottom: 0.5em }
+ .admin-container > .menu > .block-menu { margin-bottom: 0 }
+ .admin-container > .menu > .block-menu > li { width: 33.33%; display: inline-block; text-align: center; border-top: 1px solid #aaa }
+}
+
+@media screen and (max-width: 30em) {
+ .grid-container > .half { width: 100% }
+}
+
+@media screen and (min-width: 30.0625em) {
+ .settings-menu > .content > .grid-container > .half > label { margin-bottom: 0 }
+}

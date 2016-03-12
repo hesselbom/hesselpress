@@ -16,8 +16,14 @@ html
           block menu
             h2 Hesselpress
             ul.block-menu
-              li(class=data.page == 'new'?'active':''): a(href='/admin/new') New Post
-              li(class=data.page == 'list'?'active':''): a(href='/admin/') Posts
-              li: a(href='/admin/logout') Logout
+              li(class=data.page == 'new'?'active':''): a(href='/admin/new')
+                span.fa.fa-pencil.fa-fw
+                | New Post
+              li(class=data.page == 'list'?'active':''): a(href='/admin/')
+                span.fa.fa-th-list.fa-fw
+                | Posts
+              li: a(href='/admin/logout')
+                span.fa.fa-arrow-left.fa-fw
+                | Logout
         .content
           block body

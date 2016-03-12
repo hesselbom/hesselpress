@@ -14,17 +14,22 @@ append scripts
 block body
   .edit-post
     form(method='post')
-      label Title
-        input(type='text', name='title', value=data.post.title)
       if data.templates.length > 1
-        label Template
-          select(name='template')
-            each template in data.templates
-              option(value=template, selected=(data.post.template==template)) #{template.charAt(0).toUpperCase() + template.slice(1)}
+        .grid-container
+          .threequarter
+            label Title
+              input(type='text', name='title', value=data.post.title)
+          .onequarter
+            label Template
+              span.styled-select: select(name='template')
+                each template in data.templates
+                  option(value=template, selected=(data.post.template==template))= template.charAt(0).toUpperCase() + template.slice(1)
       else
+        label Title
+          input(type='text', name='title', value=data.post.title)
         input(type='hidden', name='template', value=data.templates[0])
       label Content
-        textarea(name='content', rows='20') #{data.post.content}
+        textarea(name='content', rows='20')= data.post.content
 
       section.settings-menu
         .content

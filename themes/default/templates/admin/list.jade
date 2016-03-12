@@ -3,7 +3,12 @@ block body
   .admin-page
     h1 Posts
     if data.posts.length > 0
-      ul.block-menu.-dynamicwidth
+      table.block-table
+        tr
+          th(width='70%') Title
+          th Template
         each post in data.posts
-          li: a(href='/admin/edit/'+post.slug) #{post.title}
+          tr
+            td: a(href='/admin/edit/'+post.slug)= post.title
+            td= post.template.charAt(0).toUpperCase() + post.template.slice(1)
     p: a(href='/admin/new').main-button.-right New Post

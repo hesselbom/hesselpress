@@ -78,6 +78,16 @@ form label > textarea { display: block; width: 100%; padding: 0.5em }
  .no-csscalc .admin-container > .menu { width: 30% }
  .no-csscalc .admin-container > .content { width: 60% }
 
+@media screen and (max-width: 45em) {
+ .admin-container { overflow: visible }
+ .admin-container > .menu,
+ .admin-container > .content { width: 100%; height: auto }
+ .admin-container > .menu { border-right: none; padding-bottom: 0; padding-top: 1em }
+ .admin-container > .menu > h2 { margin-bottom: 0.5em }
+ .admin-container > .menu > .block-menu { margin-bottom: 0 }
+ .admin-container > .menu > .block-menu > li { width: 33.33%; display: inline-block; text-align: center; border-top: 1px solid #aaa }
+}
+
 .edit-post { height: 100%; padding: 3em 3em 5em 3em; overflow: auto; -webkit-overflow-scrolling: touch }
 .admin-page { height: 100%; padding: 3em; overflow: auto; -webkit-overflow-scrolling: touch }
 

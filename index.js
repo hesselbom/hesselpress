@@ -79,6 +79,17 @@ function resPost(slug, res) {
   });
 }
 
+function findUniqueSlug(slug) {
+  var p = db('posts').find({ slug: slug });
+  while (p != null) {
+    var re = slug.match(/-(\d+)$/);
+    var n = parseInt(re ? re[1] : 1) + 1;
+    slug = (re ? slug.substr(0, re.index) : slug) + '-' + n;
+    p = db('posts').find({ slug: slug });
+  }
+  return slug;
+}
+
 app.get('/admin/regenerate', function(req, res) {
   if (!req.session.loggedin) {
     res.writeHead(302, { 'location': '/admin' });
@@ -115,7 +126,7 @@ app.post('/admin/new', function(req, res) {
 
   var post = db('posts').push({
     template: req.body.template,
-    slug: req.body.slug,
+    slug: findUniqueSlug(req.body.slug),
     date: req.body.date,
     title: req.body.title,
     content: req.body.content,

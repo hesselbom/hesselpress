@@ -4,11 +4,18 @@ append scripts
   script(src='/static/js/tinymce/tinymce.min.js')
   script.
     tinymce.init({
-      selector: 'textarea',
+      selector: '[data-wysiwyg]',
       content_css: '/static/css/editor.css',
       menubar: false,
       plugins: 'link image code',
-      toolbar: 'styleselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist | link unlink image | code'
+      toolbar: 'styleselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist | link unlink image | code',
+      setup: function(ed) {
+        ed.on('change', function(ev) {
+          ev.target.targetElm.value = ed.getContent();
+          jQuery(ev.target.targetElm).change();
+          // console.log(ed.getContent(), ev.target.targetElm.value);
+        });
+      }
     });
 
 block body
@@ -29,7 +36,7 @@ block body
           input(type='text', name='title', value=data.post.title)
         input(type='hidden', name='template', value=data.templates[0])
       label Content
-        textarea(name='content', rows='20')= data.post.content
+        textarea(name='content', rows='20', data-wysiwyg)= data.post.content
 
       section.settings-menu
         .content
@@ -42,6 +49,17 @@ block body
             .half
               label Slug
                 input(type='text', name='slug', value=data.post.slug, data-update-slug-from=data.isnew?'[name=title]':null)
+          hr
+          label Meta Title
+            input(type='text', name='metatitle', value=data.post.metatitle, data-metatitle='[name=title]')
+          label Meta Description
+            textarea(name='metadesc', rows='3', data-metadesc='[name=content]')= data.post.metadesc
+          label Meta Preview
+            .meta-preview
+              span(data-preview-metatitle).title= data.post.title
+              span.url= data.canonicalbase
+                span(data-preview-metaurl)
+              span(data-preview-metadesc).desc= data.post.content
 
       .submit-block
         a(data-open='.settings-menu').fa.fa-cog.settings

@@ -8,7 +8,10 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const async = require('async');
+const striptags = require('striptags');
+const Entities = require('html-entities').AllHtmlEntities;
 
+const entities = new Entities();
 const redis = new Redis();
 const db = low('db.json', { storage });
 const app = express();
@@ -90,6 +93,27 @@ function findUniqueSlug(slug) {
   return slug;
 }
 
+function stripHtml(html) {
+  html = html.replace(/&nbsp;/g, ' ');
+  return entities.encode(striptags(html)).replace(/\s\s+/g, ' ');
+}
+
+function metaTitle(title, fallback) {
+  if (!title) title = fallback;
+  title = stripHtml(title);
+  if (title.length > 55)
+    return title.substr(0, 55) + '...';
+  return title;
+}
+
+function metaDesc(desc, fallback) {
+  if (!desc) desc = fallback;
+  desc = stripHtml(desc);
+  if (desc.length > 156)
+    return desc.substr(0, 156) + '...';
+  return desc;
+}
+
 app.get('/admin/regenerate', function(req, res) {
   if (!req.session.loggedin) {
     res.writeHead(302, { 'location': '/admin' });
@@ -130,6 +154,10 @@ app.post('/admin/new', function(req, res) {
     date: req.body.date,
     title: req.body.title,
     content: req.body.content,
+    metatitle: req.body.metatitle,
+    metadesc: req.body.metadesc,
+    generatedMetatitle: metaTitle(req.body.metatitle, req.body.title),
+    generatedMetadesc: metaDesc(req.body.metadesc, req.body.content),
     canonical: 'http://'+db.object.config.domain+'/'+req.body.slug
   });
 
@@ -153,7 +181,8 @@ app.get('/admin/new', function(req, res) {
     post: { date: d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate() },
     templates: templates,
     saved: typeof req.query.saved !== 'undefined',
-    isnew: true
+    isnew: true,
+    canonicalbase: 'http://'+db.object.config.domain+'/'
   }}) );
 });
 
@@ -204,6 +233,10 @@ app.post('/admin/edit/:slug?', function(req, res) {
   post.date = req.body.date;
   post.title = req.body.title;
   post.content = req.body.content;
+  post.metatitle = req.body.metatitle;
+  post.metadesc = req.body.metadesc;
+  post.generatedMetatitle = metaTitle(req.body.metatitle, req.body.title);
+  post.generatedMetadesc = metaDesc(req.body.metadesc, req.body.content);
   post.canonical = 'http://'+db.object.config.domain+'/'+post.slug;
 
   generateAllPosts(function() {
@@ -225,7 +258,8 @@ app.get('/admin/edit/:slug?', function(req, res) {
       page: "edit",
       post: post,
       templates: templates,
-      saved: typeof req.query.saved !== 'undefined'
+      saved: typeof req.query.saved !== 'undefined',
+      canonicalbase: 'http://'+db.object.config.domain+'/'
     }}) );
   }
   else {

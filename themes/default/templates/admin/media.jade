@@ -1,0 +1,21 @@
+extends _base
+block title
+  h1 Media
+block body
+  .admin-page
+    if !data.media || data.media.length <= 0
+      p No media files yet!
+    else
+      ul.media-list
+        each img in data.media
+          li
+            .attachment
+              img(src='/media/'+img.filename)
+
+    hr
+
+    section
+      h3 Upload new file
+      form(method='post', enctype='multipart/form-data').upload-form
+        label.input: input(type='file', name='image')
+        input.submit.main-button.-right(type='submit', value='Upload')

@@ -13,7 +13,6 @@ append scripts
         ed.on('change', function(ev) {
           ev.target.targetElm.value = ed.getContent();
           jQuery(ev.target.targetElm).change();
-          // console.log(ed.getContent(), ev.target.targetElm.value);
         });
       }
     });

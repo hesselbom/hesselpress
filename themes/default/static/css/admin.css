@@ -50,24 +50,27 @@ a { color: #8598e8; transition: opacity 0.3s ease; cursor: pointer }
  a:hover { opacity: 0.7 }
 
 hr {
-    padding: 0;
-    margin: 1.5em auto 1.25em;
-    border: none;
-    border-top: thin solid #aaa;
-    color: #aaa;
-    text-align: center;
+ padding: 0;
+ margin: 3em auto;
+ border: none;
+ border-top: thin solid #aaa;
+ border-top: thin solid rgba(0,0,0,0.1);
+ color: #aaa;
+ color: rgba(0,0,0,0.3);
+ text-align: center;
 }
 hr:after {
-    content: "∞";
-    display: inline-block;
-    position: relative;
-    top: -0.05em;
-    font-size: 1.5em;
-    line-height: 1em;
-    padding: 0 0.25em;
-    background: #eee;
-    transform: translateY(-50%);
+ content: "∞";
+ display: inline-block;
+ position: relative;
+ top: -0.05em;
+ font-size: 1.5em;
+ line-height: 1em;
+ padding: 0 0.25em;
+ background: #eee;
+ transform: translateY(-50%);
 }
+.settings-menu > .content > hr { margin: 1.5em auto 1.25em }
 
 form label { display: block; margin-bottom: 1em }
 form label > select { display: block; width: 100% }
@@ -97,7 +100,7 @@ form label > .mce-panel,
  -webkit-appearance: none;
 }
 
-.main-button { display: inline-block; text-decoration: none; border: 0; border-radius: 0.2em; background: #8598e8; color: #fff; padding: 0.5em 1em; transition: opacity 0.3s ease }
+.main-button { display: inline-block; text-decoration: none; border-radius: 0.3em; background: #8598e8; color: #fff; padding: 0.5em 1em; transition: opacity 0.3s ease; border: 1px solid #e5e5e5; box-shadow: 0 1px 2px rgba(0,0,0,.04) }
  .main-button:hover { opacity: 0.7 }
  .main-button.-delete { background: #cd4747 }
  .main-button.-right { float: right }
@@ -165,6 +168,25 @@ form label > .mce-panel,
  .meta-preview > .title { color: #1a0dab; font-size: 18px; }
  .meta-preview > .url { color: #006621; font-size: small }
  .meta-preview > .desc { color: #545454; font-size: small; word-wrap: break-word }
+
+.media-list { list-style: none; padding: 0 }
+ .media-list > li { display: inline-block; vertical-align: top; width: 33.33%; padding: 0.5em }
+ .media-list > li > .attachment { position: relative; border: 1px solid #e5e5e5; box-shadow: 0 1px 2px rgba(0,0,0,.04) }
+ .media-list > li > .attachment:before { content: ''; display: block; padding-top: 100% }
+ .media-list > li > .attachment > img { max-width: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) }
+
+.upload-form { }
+ .upload-form > .input { width: calc(100% - 7em); float: left }
+ .upload-form > .submit { width: 6em; margin-top: 0.09375em }
+ .no-csscalc .upload-form > .input { width: 80% }
+ .no-csscalc .upload-form > .submit { width: 20% }
+
+@media screen and (min-width: 25em) { .media-list > li { width: 25% } }
+@media screen and (min-width: 30.0625em) { .media-list > li { width: 20% } }
+@media screen and (min-width: 44.0625em) { .media-list > li { width: 25% } }
+@media screen and (min-width: 55em) { .media-list > li { width: 20% } }
+@media screen and (min-width: 65em) { .media-list > li { width: 16.6666667% } }
+@media screen and (min-width: 75em) { .media-list > li { width: 14.2857142857% } }
 
 @media screen and (max-width: 44em) {
  .admin-container { overflow: visible }

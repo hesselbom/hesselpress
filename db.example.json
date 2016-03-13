@@ -7,7 +7,15 @@
     "template404": "_404",
     "username": "admin",
     "password": "admin",
-    "disqusid": ""
+    "disqusid": "",
+    "mediaUploadDir": "uploads/media",
+    "acceptedMedia": [
+      "jpg",
+      "jpeg",
+      "png",
+      "gif",
+      "svg"
+    ]
   },
   "posts": [
     {

@@ -94,8 +94,13 @@
     });
     $(window).click(function(ev) {
       var $this = $(ev.target);
+
       if (!$this.is('[data-togglemenu]') && !($this.is('[data-menu]') || $this.parents('[data-menu]').length > 0)) {
         $('[data-menu]').removeClass('-visible');
+      }
+
+      if (!$this.is('[data-open]') && !($this.is('.edit-post .settings-menu > .content') || $this.parents('.edit-post .settings-menu > .content').length > 0)) {
+        $('.edit-post .settings-menu').removeClass('-visible');
       }
     });
   });

@@ -10,7 +10,20 @@ const path = require('path');
 const async = require('async');
 const striptags = require('striptags');
 const Entities = require('html-entities').AllHtmlEntities;
+const multer  = require('multer');
+const mkdirp = require('mkdirp');
 
+const uploadMedia = multer({ fileFilter: uploadMediaFilter, storage: multer.diskStorage({
+  destination: function (req, file, cb) {
+    mkdirp(db.object.config.mediaUploadDir, function (err) {
+      if (err) console.error(err)
+      cb(null, db.object.config.mediaUploadDir);
+    });
+  },
+  filename: function (req, file, cb) {
+    cb(null, findUniqueFilename(file.originalname, db.object.config.mediaUploadDir));
+  } })
+})
 const entities = new Entities();
 const redis = new Redis();
 const db = low('db.json', { storage });
@@ -20,6 +33,7 @@ const theme = db.object.config.theme;
 
 app.disable('x-powered-by');
 app.use('/static', express.static('themes/'+theme+'/static'));
+app.use('/media', express.static(db.object.config.mediaUploadDir));
 app.use(session({ secret: db.object.config.secret, resave: false, saveUninitialized: false }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -31,6 +45,20 @@ var templates = fs.readdirSync('themes/'+theme+'/templates')
   .map(function(file) {
     return file.substr(0, file.length-'.jade'.length);
   });
+
+function uploadMediaFilter(req, file, cb) {
+  var ext = file.originalname.split('.').pop();
+  cb(null, (db.object.config.acceptedMedia.indexOf(ext) > -1))
+}
+
+function fileExists(filePath) {
+  try {
+    return fs.statSync(filePath).isFile();
+  }
+  catch (err) {
+    return false;
+  }
+}
 
 function generatePost(slug, cb) {
   var post = db('posts').find({ slug: slug });
@@ -80,6 +108,17 @@ function resPost(slug, res) {
     }
     res.end(html);
   });
+}
+
+function findUniqueFilename(name, base) {
+  var ext = path.extname(name);
+  name = name.substr(0, name.length - ext.length);
+  while (fileExists(path.join(base, name + ext))) {
+    var re = name.match(/-(\d+)$/);
+    var n = parseInt(re ? re[1] : 1) + 1;
+    name = (re ? name.substr(0, re.index) : name) + '-' + n;
+  }
+  return name + ext;
 }
 
 function findUniqueSlug(slug) {
@@ -265,6 +304,37 @@ app.get('/admin/edit/:slug?', function(req, res) {
   else {
     res.status(404).end('404 - Post not found');
   }
+});
+
+app.post('/admin/media', uploadMedia.single('image'), function(req, res) {
+  if (!req.session.loggedin) {
+    res.writeHead(302, { 'location': '/admin' });
+    return res.end();
+  }
+
+  db('media').push({
+    title: req.file.filename,
+    filename: req.file.filename,
+    path: req.file.path,
+    size: req.file.size,
+    mimetype: req.file.mimetype
+  });
+
+  res.writeHead(302, { 'location': '/admin/media' });
+  res.end();
+});
+
+app.get('/admin/media', function(req, res) {
+  if (!req.session.loggedin) {
+    res.writeHead(302, { 'location': '/admin' });
+    return res.end();
+  }
+
+  res.end( jade.renderFile('themes/'+theme+'/templates/admin/media.jade', { data: {
+    title: "Admin",
+    page: "media",
+    media: db.object.media
+  }}) );
 });
 
 app.get('/admin', function(req, res) {

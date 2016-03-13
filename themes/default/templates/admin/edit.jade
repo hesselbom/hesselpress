@@ -18,6 +18,11 @@ append scripts
       }
     });
 
+block title
+  if data.isnew
+    h1 New Post
+  else
+    h1 Edit Post
 block body
   .edit-post
     form(method='post')

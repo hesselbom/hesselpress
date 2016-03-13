@@ -106,7 +106,7 @@ form label > .mce-panel,
  .submit-block > a,
  .submit-block > input { margin-left: 1em }
  .submit-block > .info { float: left; line-height: 2.25em }
- .submit-block > .settings { float: left; line-height: 2.25em; margin-right: 1em; margin-left: 0 }
+ .submit-block > .settings { float: left; line-height: 2.25em; margin-left: -1em; padding: 0 1em }
 
 .success-color { color: #389525 }
 .delete-color { color: #cd4747 }
@@ -130,7 +130,12 @@ form label > .mce-panel,
 .admin-container { overflow: hidden; height: 100% }
  .admin-container > .menu,
  .admin-container > .content { display: inline-block; vertical-align: top; height: 100%; position: relative }
- .admin-container > .menu { background: #dfdfdf; width: 15em; display: inline-block; border-right: 1px solid #aaa; overflow: auto; -webkit-overflow-scrolling: touch; text-align: center; padding: 2em 0 }
+ .admin-container > .menu { background: #dfdfdf; width: 15em; max-width: 100%; display: inline-block; border-right: 1px solid #aaa; overflow: auto; -webkit-overflow-scrolling: touch; text-align: center; padding: 2em 0 }
+ .admin-container > .menu > .close { display: none }
+ .admin-container > .menu > .bottommenu { position: absolute; bottom: 0; left: 0; right: 0; margin-bottom: 0.5em }
+ .admin-container > .openmenu { display: none; text-align: center; background: #dfdfdf }
+ .admin-container > .openmenu > .open { padding: 1em; float: left }
+ .admin-container > .openmenu > h1 { font-size: 2em; line-height: 1.5; margin: 0 0 0 -1.25em; display: inline-block; vertical-align: middle }
  .admin-container > .content { width: calc(100% - 15em) }
  .no-csscalc .admin-container > .menu { width: 30% }
  .no-csscalc .admin-container > .content { width: 60% }
@@ -163,23 +168,20 @@ form label > .mce-panel,
 
 @media screen and (max-width: 44em) {
  .admin-container { overflow: visible }
- .admin-container > .menu,
  .admin-container > .content { width: 100%; height: auto }
- .admin-container > .menu { border-right: none; padding-bottom: 0; padding-top: 1em }
- .admin-container > .menu > h2 { margin-bottom: 0.5em }
- .admin-container > .menu > .block-menu { margin-bottom: 0; height: 2.625em; overflow: auto; white-space: nowrap }
- .admin-container > .menu > .block-menu > li { width: 33.33%; min-width: 8em; display: inline-block; text-align: center; border-top: 1px solid #aaa }
+ .admin-container > .menu { z-index: 1; position: fixed; top: 0; bottom: 0; left: 0; display: none }
+ .admin-container > .menu.-visible { display: block }
+ .admin-container > .menu > .close { display: block; position: absolute; top: 0; right: 0; padding: 1em }
+ .admin-container > .openmenu { display: block }
 
  .admin-page { padding: 2em }
  .edit-post { padding: 2em 2em 4em 2em }
- .admin-container > .menu { border-bottom: 1px solid #aaa }
-}
-
-@media screen and (max-width: 25em) {
- .admin-container > .menu > .block-menu > li { width: 40% }
 }
 
 @media screen and (max-width: 30em) {
+ .admin-page { padding: 1em }
+ .edit-post { padding: 1em 1em 3em 1em }
+
  .grid-container > .half,
  .grid-container > .onequarter,
  .grid-container > .threequarter { width: 100% }

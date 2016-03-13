@@ -87,5 +87,16 @@
     $('[name=title],[name=metatitle]').change();
     $('[name=content],[name=metadesc]').change();
     $('[name=slug]').change();
+
+    // Mobile menu
+    $('[data-togglemenu]').click(function() {
+      $('[data-menu]').toggleClass('-visible');
+    });
+    $(window).click(function(ev) {
+      var $this = $(ev.target);
+      if (!$this.is('[data-togglemenu]') && !($this.is('[data-menu]') || $this.parents('[data-menu]').length > 0)) {
+        $('[data-menu]').removeClass('-visible');
+      }
+    });
   });
 }(jQuery));

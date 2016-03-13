@@ -3,4 +3,7 @@ block body
   .admin-page
     h1 Are you sure you want to delete: #{data.post.title}?
     form(method='post')
+      a(href='/admin/edit/'+data.post.slug)
+        span.fa.fa-hand-o-left.fa-fw
+        |  Go back
       input.main-button.-delete.-right(type='submit', value='Delete')

@@ -1,18 +1,29 @@
 doctype html
 html
   head
+    meta(charset='utf-8')
+
     title= data.title
+
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+
     link(href='/static/css/normalize.css', rel='stylesheet')
     link(href='/static/css/fontawesome.css', rel='stylesheet')
     link(href='/static/css/admin.css', rel='stylesheet')
+
     block scripts
       script(src='/static/js/modernizr.custom.js')
       script(src='/static/js/jquery.js')
       script(src='/static/js/admin.js')
+
   body
     block container
       .admin-container
-        .menu
+        .openmenu
+          a(data-togglemenu).fa.fa-bars.open
+          block title
+        .menu(data-menu)
+          a(data-togglemenu).fa.fa-close.close
           block menu
             h2 Hesselpress
             ul.block-menu
@@ -22,6 +33,7 @@ html
               li(class=data.page == 'list'?'active':''): a(href='/admin/')
                 span.fa.fa-th-list.fa-fw
                 | Posts
+            ul.bottommenu.block-menu
               li: a(href='/admin/logout')
                 span.fa.fa-arrow-left.fa-fw
                 | Logout

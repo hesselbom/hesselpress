@@ -34,6 +34,25 @@ Every template not starting with an underscore in it's filename will be availabl
 
 You can set template settings if you create a .json file with the same name as the template. The following options are available:
 
+```json
+{
+  "name": "Just an image",
+  "fields": [
+    {
+      "id": "image",
+      "name": "Image",
+      "type": "image"
+    },
+    {
+      "id": "imagecaption",
+      "name": "Image Caption",
+      "type": "text"
+    }
+  ],
+  "exclude": [ "content" ]
+}
+```
+
 #### name
 The name of the template
 
@@ -52,10 +71,5 @@ Type of field. The following types are currently supported:
 * text
 * image
 
-```json
-{
-  "id": "imagecaption",
-  "name": "Image Caption",
-  "type": "text"
-}
-```
+#### exclude
+Array of fields to exclude

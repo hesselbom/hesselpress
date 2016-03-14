@@ -338,10 +338,10 @@ app.get('/admin/media', function(req, res) {
 });
 
 app.get('/admin/api/media', function(req, res) {
-  // if (!req.session.loggedin) {
-  //   res.writeHead(302, { 'location': '/admin' });
-  //   return res.end();
-  // }
+  if (!req.session.loggedin) {
+    res.writeHead(302, { 'location': '/admin' });
+    return res.end();
+  }
 
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify(db('media').map(function(img) {
@@ -349,7 +349,6 @@ app.get('/admin/api/media', function(req, res) {
       title: img.title,
       filename: img.filename,
       filepath: '/media/' + img.filename
-      // filepath: 'http://'+db.object.config.domain+'/media/' + img.filename
     }
   })));
 });

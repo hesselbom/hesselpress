@@ -1,0 +1,28 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+
+    title= post.generatedMetatitle
+
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    meta(name='description', content=post.generatedMetadesc)
+
+    meta(name='og:title', content=post.generatedMetatitle)
+    meta(name='og:description', content=post.generatedMetadesc)
+    meta(name='og:url', content=post.canonical)
+
+    meta(name='twitter:card', content='summary')
+    meta(name='twitter:title', content=post.generatedMetatitle)
+    meta(name='twitter:description', content=post.generatedMetadesc)
+    meta(name='twitter:url', content=post.canonical)
+
+    link(rel='stylesheet', href='/static/css/normalize.css')
+    link(rel='stylesheet', href='/static/css/style.css')
+    link(rel='canonical', href=post.canonical)
+
+  body
+    header.main-header
+      a.logo(href='/'): h2= name
+
+    block body

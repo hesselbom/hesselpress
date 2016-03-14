@@ -44,8 +44,22 @@ block body
         label Title
           input(type='text', name='title', value=data.post.title)
         input(type='hidden', name='template', value=data.templates[0])
-      label Content
-        textarea(name='content', rows='20', data-wysiwyg)= data.post.content
+      if data.excludefields.indexOf('content') === -1
+        label Content
+          textarea(name='content', rows='20', data-wysiwyg)= data.post.content
+
+      each field in data.customfields
+        if field.type === 'image'
+          label.image-field= field.name
+            p
+              input(type='hidden', name=field.id, value=data.post[field.id])
+              a.button.main-button.-small Select image
+              span.image
+                if data.post[field.id]
+                  img(src=data.post[field.id])
+        else
+          label= field.name
+            input(type='text', name=field.id, value=data.post[field.id])
 
       section.modal-window.-maxwidth(data-settings-modal)
         .content
@@ -57,7 +71,7 @@ block body
                 input(type='date', name='date', value=data.post.date)
             .half
               label Slug
-                input(type='text', name='slug', value=data.post.slug, data-update-slug-from=data.isnew?'[name=title]':null)
+                input(type='text', name='slug', value=data.post.slug, data-update-slug-from=(data.isnew?'[name=title]':null))
           hr
           label Meta Title
             input(type='text', name='metatitle', value=data.post.metatitle, data-metatitle='[name=title]')

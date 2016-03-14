@@ -35,9 +35,10 @@
 
     if (mediaModal !== null) {
       mediaModal.addClass('-visible');
+      mediaModal.attr('data-just-opened', true);
     }
     else {
-      var $modal = $('<div class="modal-window -visible" data-media-modal>');
+      var $modal = $('<div class="modal-window -visible" data-media-modal data-just-opened>');
       var $content = $('<div class="content">').appendTo($modal);
       $('<a class="close fa fa-times">').appendTo($content);
       $('<h3>Select media file...</h3>').appendTo($content);
@@ -59,6 +60,7 @@
 
       mediaModal = $modal;
     }
+    setTimeout(function() { mediaModal.removeAttr('data-just-opened') }, 0);
   }
 
   $(function() {
@@ -80,13 +82,26 @@
     $('[data-update-slug-from]').each(function() {
       var $this = $(this);
       $this.change(function() {
-        $this.attr('data-update-slug-from', '');
+        if ($this.val()) $this.attr('data-update-slug-from', '');
       });
       $($this.attr('data-update-slug-from')).change(function() {
         if ($this.attr('data-update-slug-from')) {
           $this.val(slugify($(this).val()));
         }
       });
+    });
+
+    // Image field type
+    $('.image-field .button').click(function() {
+     var $field = $(this).parents('.image-field').first();
+     showMediaModal(function(filepath) {
+      var $input = $('input', $field),
+          $img = $('img', $field);
+      if ($img.length === 0)
+       $img = $('<img>').appendTo($('.image', $field));
+      $input.val(filepath);
+      $img.attr('src', filepath);
+     });
     });
 
     // Meta data
@@ -139,8 +154,9 @@
         $('[data-menu]').removeClass('-visible');
       }
 
-      if (!$this.is('[data-open]') && !($this.is('.edit-post .modal-window > .content') || $this.parents('.edit-post .modal-window > .content').length > 0 || $this.parents('.mce-window').length > 0)) {
-        $('.edit-post .modal-window').removeClass('-visible');
+      var $modalWindow = $('.edit-post .modal-window');
+      if (!$this.is('[data-open]') && !($this.is('.edit-post .modal-window > .content') || $this.parents('.edit-post .modal-window > .content').length > 0 || $this.parents('.mce-window').length > 0 || $modalWindow.is('[data-just-opened]'))) {
+        $modalWindow.removeClass('-visible');
       }
     });
   });

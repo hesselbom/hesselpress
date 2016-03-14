@@ -1,0 +1,16 @@
+{
+ "name": "Just an image",
+ "fields": [
+  {
+   "id": "image",
+   "name": "Image",
+   "type": "image"
+  },
+  {
+   "id": "imagecaption",
+   "name": "Image Caption",
+   "type": "text"
+  }
+ ],
+ "exclude": [ "content" ]
+}

@@ -16,9 +16,11 @@
     "html-entities": "^1.2.0",
     "ioredis": "^1.15.1",
     "jade": "^1.11.0",
+    "jsonfile": "^2.2.3",
     "lowdb": "^0.12.5",
     "mkdirp": "^0.5.1",
     "multer": "^1.1.0",
-    "striptags": "^2.1.1"
+    "striptags": "^2.1.1",
+    "truncate-html": "0.0.6"
   }
 }

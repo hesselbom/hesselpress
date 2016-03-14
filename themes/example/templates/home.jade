@@ -1,0 +1,13 @@
+extends _base
+block body
+  article.welcome-text
+    | !{post.content}
+
+  section.post-list
+    each p in posts
+      if p.template != 'home'
+        article.cms-post
+          header.header
+            h1: a(href=p.canonical)= p.title
+            time #{p.date}
+          | !{helpers.truncate(p.content, 10)}

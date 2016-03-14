@@ -1,7 +1,7 @@
 {
   "config": {
     "name": "Hesselpress",
-    "theme": "default",
+    "theme": "example",
     "domain": "localhost:3000",
     "secret": "hesselpress",
     "template404": "_404",

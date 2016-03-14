@@ -11,5 +11,5 @@ block body
         each post in data.posts
           tr
             td: a(href='/admin/edit/'+post.slug)= post.title
-            td= post.template.charAt(0).toUpperCase() + post.template.slice(1)
+            td= helpers.getTemplateName(post.template)
     p: a(href='/admin/new').main-button.-right New Post

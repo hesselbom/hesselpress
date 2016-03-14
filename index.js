@@ -12,6 +12,8 @@ const striptags = require('striptags');
 const Entities = require('html-entities').AllHtmlEntities;
 const multer  = require('multer');
 const mkdirp = require('mkdirp');
+const truncate = require('truncate-html');
+const jsonfile = require('jsonfile');
 
 const uploadMedia = multer({ fileFilter: uploadMediaFilter, storage: multer.diskStorage({
   destination: function (req, file, cb) {
@@ -30,45 +32,84 @@ const db = low('db.json', { storage });
 const app = express();
 
 const theme = db.object.config.theme;
+const fallbackTheme = 'default';
 
 app.disable('x-powered-by');
-app.use('/static', express.static('themes/'+theme+'/static'));
+app.use('/static', express.static(getThemePath('static')));
 app.use('/admin/static', express.static('admin/static'));
 app.use('/media', express.static(db.object.config.mediaUploadDir));
 app.use(session({ secret: db.object.config.secret, resave: false, saveUninitialized: false }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var templates = fs.readdirSync('themes/'+theme+'/templates')
+var templates = fs.readdirSync(getThemePath('templates'))
   .filter(function(file) {
-    return fs.statSync(path.join('themes/'+theme+'/templates', file)).isFile() && file[0] !== '_';
+    var ext = file.split('.').pop();
+    return fs.statSync(path.join(getThemePath('templates'), file)).isFile() && file[0] !== '_' && ext === 'jade';
   })
   .map(function(file) {
     return file.substr(0, file.length-'.jade'.length);
   });
+
+function getThemePath(path) {
+  if (!pathExists('themes/'+theme+'/'+path)) {
+    return 'themes/'+fallbackTheme+'/'+path;
+  }
+  return 'themes/'+theme+'/'+path;
+}
 
 function uploadMediaFilter(req, file, cb) {
   var ext = file.originalname.split('.').pop();
   cb(null, (db.object.config.acceptedMedia.indexOf(ext) > -1))
 }
 
-function fileExists(filePath) {
+function getTemplateInfo(template) {
+  var path = getThemePath('templates/'+template+'.json');
+  if (pathExists(path)) {
+    return jsonfile.readFileSync(path);
+  }
+  return {
+    name: template.charAt(0).toUpperCase() + template.slice(1),
+    fields: [],
+    exclude: []
+  }
+}
+
+function getTemplateName(template) {
+  return getTemplateInfo(template).name || "";
+}
+
+function getTemplateFields(template) {
+  return getTemplateInfo(template).fields || [];
+}
+
+function getTemplateExclude(template) {
+  return getTemplateInfo(template).exclude || [];
+}
+
+function pathExists(filePath) {
   try {
-    return fs.statSync(filePath).isFile();
+    var stat = fs.statSync(filePath);
+    return stat.isFile() || stat.isDirectory();
   }
   catch (err) {
     return false;
   }
 }
 
+function isLoggedIn(req) {
+  return req.session.loggedin;
+}
+
 function generatePost(slug, cb) {
   var post = db('posts').find({ slug: slug });
 
-  var html = jade.renderFile('themes/'+theme+'/templates/'+post.template+'.jade', {
+  var html = jade.renderFile(getThemePath('templates/'+post.template+'.jade'), {
     post: post,
     posts: db.object.posts,
     disqusid: db.object.config.disqusid,
-    name: db.object.config.name
+    name: db.object.config.name,
+    helpers: { truncate: truncate }
   });
 
   if (cb)
@@ -78,9 +119,10 @@ function generatePost(slug, cb) {
 }
 
 function generate404(cb) {
-  var html = jade.renderFile('themes/'+theme+'/templates/'+db.object.config.template404+'.jade', {
+  var html = jade.renderFile(getThemePath('templates/'+db.object.config.template404+'.jade'), {
     post: { title: '404' },
-    posts: db.object.posts
+    posts: db.object.posts,
+    helpers: { truncate: truncate }
   });
 
   if (cb)
@@ -114,7 +156,7 @@ function resPost(slug, res) {
 function findUniqueFilename(name, base) {
   var ext = path.extname(name);
   name = name.substr(0, name.length - ext.length);
-  while (fileExists(path.join(base, name + ext))) {
+  while (pathExists(path.join(base, name + ext))) {
     var re = name.match(/-(\d+)$/);
     var n = parseInt(re ? re[1] : 1) + 1;
     name = (re ? name.substr(0, re.index) : name) + '-' + n;
@@ -155,7 +197,7 @@ function metaDesc(desc, fallback) {
 }
 
 app.get('/admin/regenerate', function(req, res) {
-  if (!req.session.loggedin) {
+  if (!isLoggedIn(req)) {
     res.writeHead(302, { 'location': '/admin' });
     return res.end();
   }
@@ -183,7 +225,7 @@ app.get('/admin/logout', function(req, res) {
 });
 
 app.post('/admin/new', function(req, res) {
-  if (!req.session.loggedin) {
+  if (!isLoggedIn(req)) {
     res.writeHead(302, { 'location': '/admin' });
     return res.end();
   }
@@ -208,7 +250,7 @@ app.post('/admin/new', function(req, res) {
 });
 
 app.get('/admin/new', function(req, res) {
-  if (!req.session.loggedin) {
+  if (!isLoggedIn(req)) {
     res.writeHead(302, { 'location': '/admin' });
     return res.end();
   }
@@ -222,12 +264,14 @@ app.get('/admin/new', function(req, res) {
     templates: templates,
     saved: typeof req.query.saved !== 'undefined',
     isnew: true,
-    canonicalbase: 'http://'+db.object.config.domain+'/'
+    canonicalbase: 'http://'+db.object.config.domain+'/',
+    customfields: [],
+    excludefields: []
   }}) );
 });
 
 app.post('/admin/delete/:slug?', function(req, res) {
-  if (!req.session.loggedin) {
+  if (!isLoggedIn(req)) {
     res.writeHead(302, { 'location': '/admin' });
     return res.end();
   }
@@ -243,7 +287,7 @@ app.post('/admin/delete/:slug?', function(req, res) {
 });
 
 app.get('/admin/delete/:slug?', function(req, res) {
-  if (!req.session.loggedin) {
+  if (!isLoggedIn(req)) {
     res.writeHead(302, { 'location': '/admin' });
     return res.end();
   }
@@ -262,7 +306,7 @@ app.get('/admin/delete/:slug?', function(req, res) {
 });
 
 app.post('/admin/edit/:slug?', function(req, res) {
-  if (!req.session.loggedin) {
+  if (!isLoggedIn(req)) {
     res.writeHead(302, { 'location': '/admin' });
     return res.end();
   }
@@ -276,8 +320,13 @@ app.post('/admin/edit/:slug?', function(req, res) {
   post.metatitle = req.body.metatitle;
   post.metadesc = req.body.metadesc;
   post.generatedMetatitle = metaTitle(req.body.metatitle, req.body.title);
-  post.generatedMetadesc = metaDesc(req.body.metadesc, req.body.content);
+  post.generatedMetadesc = metaDesc(req.body.metadesc, req.body.content||'');
   post.canonical = 'http://'+db.object.config.domain+'/'+post.slug;
+
+  var customfields = getTemplateFields(post.template);
+  customfields.forEach(function(field) {
+    post[field.id] = req.body[field.id];
+  });
 
   generateAllPosts(function() {
     res.writeHead(302, { 'location': '/admin/edit/'+post.slug+'?saved' });
@@ -286,7 +335,7 @@ app.post('/admin/edit/:slug?', function(req, res) {
 });
 
 app.get('/admin/edit/:slug?', function(req, res) {
-  if (!req.session.loggedin) {
+  if (!isLoggedIn(req)) {
     res.writeHead(302, { 'location': '/admin' });
     return res.end();
   }
@@ -299,7 +348,9 @@ app.get('/admin/edit/:slug?', function(req, res) {
       post: post,
       templates: templates,
       saved: typeof req.query.saved !== 'undefined',
-      canonicalbase: 'http://'+db.object.config.domain+'/'
+      canonicalbase: 'http://'+db.object.config.domain+'/',
+      customfields: getTemplateFields(post.template),
+      excludefields: getTemplateExclude(post.template)
     }}) );
   }
   else {
@@ -308,7 +359,7 @@ app.get('/admin/edit/:slug?', function(req, res) {
 });
 
 app.post('/admin/media', uploadMedia.single('image'), function(req, res) {
-  if (!req.session.loggedin) {
+  if (!isLoggedIn(req)) {
     res.writeHead(302, { 'location': '/admin' });
     return res.end();
   }
@@ -326,7 +377,7 @@ app.post('/admin/media', uploadMedia.single('image'), function(req, res) {
 });
 
 app.get('/admin/media', function(req, res) {
-  if (!req.session.loggedin) {
+  if (!isLoggedIn(req)) {
     res.writeHead(302, { 'location': '/admin' });
     return res.end();
   }
@@ -339,7 +390,7 @@ app.get('/admin/media', function(req, res) {
 });
 
 app.get('/admin/api/media', function(req, res) {
-  if (!req.session.loggedin) {
+  if (!isLoggedIn(req)) {
     res.writeHead(302, { 'location': '/admin' });
     return res.end();
   }
@@ -355,12 +406,15 @@ app.get('/admin/api/media', function(req, res) {
 });
 
 app.get('/admin', function(req, res) {
-  if (req.session.loggedin) {
-    res.end( jade.renderFile('admin/templates/list.jade', { data: {
-      title: "Admin",
-      page: "list",
-      posts: db.object.posts
-    }}) );
+  if (isLoggedIn(req)) {
+    res.end( jade.renderFile('admin/templates/list.jade', {
+      data: {
+        title: "Admin",
+        page: "list",
+        posts: db.object.posts
+      },
+      helpers: { getTemplateName: getTemplateName }
+    }) );
   }
   else {
     res.end( jade.renderFile('admin/templates/login.jade', { data: {

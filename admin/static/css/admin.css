@@ -105,6 +105,7 @@ form label > .mce-panel,
  .main-button:hover { opacity: 0.7 }
  .main-button.-delete { background: #cd4747 }
  .main-button.-right { float: right }
+ .main-button.-small { font-size: 0.8em; padding: 0.25em 0.5em }
 
 .submit-block { text-align: right; position: absolute; bottom: 0; left: 0; right: 0; border-top: 1px solid #aaa; background: #eee; padding: 0.5em 1em }
  .submit-block > a,
@@ -183,6 +184,10 @@ form label > .mce-panel,
  .upload-form > .submit { width: 6em; margin-top: 0.09375em }
  .no-csscalc .upload-form > .input { width: 80% }
  .no-csscalc .upload-form > .submit { width: 20% }
+
+.image-field {}
+ .image-field .image { display: block; margin-top: 0.5em }
+ .image-field .image > img { display: block; max-width: 10em; max-height: 10em }
 
 @media screen and (min-width: 25em) { .media-list > li { width: 25% } }
 @media screen and (min-width: 30.0625em) { .media-list > li { width: 20% } }

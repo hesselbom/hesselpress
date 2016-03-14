@@ -1,0 +1,13 @@
+extends _base
+block body
+  article
+    .cms-post
+      header.header
+        h1= post.title
+        time #{post.date}
+    if post.image
+      figure.big-figure
+        img(src=post.image, alt=post.imagecaption)
+        figcaption= post.imagecaption
+    .cms-post
+      | !{post.content}

@@ -1,0 +1,53 @@
+* { box-sizing: border-box }
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 100%;
+  line-height: 1.6;
+  color: #444;
+  -webkit-font-smoothing: antialiased;
+  padding:6em 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, sans-serif;
+  font-weight: normal;
+  line-height: 1.2;
+}
+
+h1 { font-size: 3em; }
+h2 { font-size: 2.375em; }
+h3 { font-size: 1.5em; }
+h4 { font-size: 1.125em; }
+h5 { font-size: 1em; }
+h6 { font-size: 0.75em; }
+
+h1, h2, h3, h4, h5, h6, p, ul { margin-top: 0 }
+
+a { color: #8598e8; transition: opacity 0.3s ease }
+a:hover { opacity: 0.5 }
+
+img { max-width: 100%; height: auto }
+
+.main-header { max-width:44em; margin:0 auto; text-align:center }
+ .main-header > .logo { display:inline-block; text-transform:uppercase; border:0.35em solid #444; padding:0.2em 0.5em; margin:0 auto 6em auto; text-decoration:none; color:inherit }
+ .main-header > .logo > h2 { margin:0 }
+
+.welcome-text { text-align:center; font-size:1.3125em; margin-bottom:3em }
+
+.cms-post { text-align:left; font-size:1.3125em; max-width:44em; margin:0 auto; padding:0 1em }
+ .cms-post > .header { margin-bottom:2em }
+ .cms-post > .header > h1 { margin:0 }
+ .cms-post > .header > time { font-style:italic }
+
+.post-list { }
+ .post-list > .cms-post { padding: 1em }
+ .post-list > .cms-post:nth-child(odd) { background:#eee }
+ .post-list > .cms-post > *:last-child { margin-bottom:0 }
+
+.big-figure { text-align:center; padding:0; margin:2em auto }
+
+@media screen and (max-width: 30em) {
+ .main-header > .logo { font-size:0.75em; margin-bottom:4em }
+ .cms-post { font-size:1em }
+}

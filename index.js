@@ -337,6 +337,23 @@ app.get('/admin/media', function(req, res) {
   }}) );
 });
 
+app.get('/admin/api/media', function(req, res) {
+  // if (!req.session.loggedin) {
+  //   res.writeHead(302, { 'location': '/admin' });
+  //   return res.end();
+  // }
+
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify(db('media').map(function(img) {
+    return {
+      title: img.title,
+      filename: img.filename,
+      filepath: '/media/' + img.filename
+      // filepath: 'http://'+db.object.config.domain+'/media/' + img.filename
+    }
+  })));
+});
+
 app.get('/admin', function(req, res) {
   if (req.session.loggedin) {
     res.end( jade.renderFile('themes/'+theme+'/templates/admin/list.jade', { data: {

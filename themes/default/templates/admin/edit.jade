@@ -9,6 +9,11 @@ append scripts
       menubar: false,
       plugins: 'link image code',
       toolbar: 'styleselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist | link unlink image | code',
+      file_browser_callback: function(field_name, url, type, win) {
+        if (type === 'image') showMediaModal(function(file) {
+          $('#'+field_name).val(file);
+        });
+      },
       setup: function(ed) {
         ed.on('change', function(ev) {
           ev.target.targetElm.value = ed.getContent();
@@ -42,7 +47,7 @@ block body
       label Content
         textarea(name='content', rows='20', data-wysiwyg)= data.post.content
 
-      section.settings-menu
+      section.modal-window.-maxwidth(data-settings-modal)
         .content
           h3 Settings
           a.close.fa.fa-times
@@ -66,7 +71,7 @@ block body
               span(data-preview-metadesc).desc= data.post.content
 
       .submit-block
-        a(data-open='.settings-menu').fa.fa-cog.settings
+        a(data-open='[data-settings-modal]').fa.fa-cog.settings
         if data.saved
           span.info.success-color Saved!
         if !data.isnew

@@ -70,7 +70,7 @@ hr:after {
  background: #eee;
  transform: translateY(-50%);
 }
-.settings-menu > .content > hr { margin: 1.5em auto 1.25em }
+.modal-window > .content > hr { margin: 1.5em auto 1.25em }
 
 form label { display: block; margin-bottom: 1em }
 form label > select { display: block; width: 100% }
@@ -114,13 +114,15 @@ form label > .mce-panel,
 .success-color { color: #389525 }
 .delete-color { color: #cd4747 }
 
-.settings-menu { }
- .settings-menu > .content { background: #eee; border: 1px solid #aaa; padding: 1em }
- .settings-menu > .content > .close { position: absolute; top: 1em; right: 1em }
- .settings-menu > .content > .grid-container > .half:last-child > label:last-child { margin-bottom: 0 }
-.edit-post .settings-menu { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3) }
- .edit-post .settings-menu.-visible { display: block }
- .edit-post .settings-menu > .content { position: absolute; top: 50%; left: 1em; right: 1em; transform: translateY(-50%); margin-top: -1.75em; margin-left: auto; margin-right: auto; max-width: 40em }
+.modal-window { z-index: 65538 } /* Appear above TinyMCE */
+ .modal-window > .content { background: #eee; border: 1px solid #aaa; padding: 1em }
+ .modal-window > .content > .close { position: absolute; top: 1em; right: 1em }
+ .modal-window > .content > *:last-child { margin-bottom: 0 }
+ .modal-window > .content > .grid-container > .half:last-child > label:last-child { margin-bottom: 0 }
+.edit-post .modal-window { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3) }
+ .edit-post .modal-window.-visible { display: block }
+ .edit-post .modal-window > .content { position: absolute; top: 50%; left: 1em; right: 1em; transform: translateY(-50%); margin-top: -1.75em; margin-left: auto; margin-right: auto }
+ .edit-post .modal-window.-maxwidth > .content { max-width: 40em }
 
 .grid-container { margin: 0 -0.5em }
  .grid-container > .half,
@@ -171,7 +173,7 @@ form label > .mce-panel,
 
 .media-list { list-style: none; padding: 0 }
  .media-list > li { display: inline-block; vertical-align: top; width: 33.33%; padding: 0.5em }
- .media-list > li > .attachment { position: relative; border: 1px solid #e5e5e5; box-shadow: 0 1px 2px rgba(0,0,0,.04) }
+ .media-list > li > .attachment { display: block; position: relative; border: 1px solid #e5e5e5; box-shadow: 0 1px 2px rgba(0,0,0,.04) }
  .media-list > li > .attachment:before { content: ''; display: block; padding-top: 100% }
  .media-list > li > .attachment > img { max-width: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) }
 
@@ -210,5 +212,5 @@ form label > .mce-panel,
 }
 
 @media screen and (min-width: 30.0625em) {
- .settings-menu > .content > .grid-container > .half > label { margin-bottom: 0 }
+ .modal-window > .content > .grid-container > .half > label { margin-bottom: 0 }
 }

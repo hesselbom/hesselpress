@@ -1,4 +1,7 @@
 (function($) {
+  var mediaModal = null;
+  var mediaModalCb = null;
+
   function slugify(text) {
     return text.toString().toLowerCase()
       .replace(/\s+/g, '-')           // Replace spaces with -
@@ -8,28 +11,65 @@
       .replace(/-+$/, '');            // Trim - from end of text
   }
 
-  function striphtml(str) {
+  function stripHtml(str) {
     return $('<div/>').html(str).text()
       .replace(/(?:\r\n|\r|\n|\s)+/g, ' ');
   }
 
-  function metatitle(title) {
-    title = striphtml(title);
+  function metaTitle(title) {
+    title = stripHtml(title);
     if (title.length > 55)
       return title.substr(0, 55) + '...';
     return title;
   }
 
-  function metadesc(desc) {
-    desc = striphtml(desc);
+  function metaDesc(desc) {
+    desc = stripHtml(desc);
     if (desc.length > 156)
       return desc.substr(0, 156) + '...';
     return desc;
   }
 
+  function showMediaModal(cb) {
+    mediaModalCb = cb || null;
+
+    if (mediaModal !== null) {
+      mediaModal.addClass('-visible');
+    }
+    else {
+      var $modal = $('<div class="modal-window -visible" data-media-modal>');
+      var $content = $('<div class="content">').appendTo($modal);
+      $('<a class="close fa fa-times">').appendTo($content);
+      $('<h3>Select media file...</h3>').appendTo($content);
+      var $loading = $('<p>Loading...</p>').appendTo($content);
+      var $list = $('<ul class="media-list">').appendTo($content);
+      $modal.appendTo('.edit-post');
+
+      $.get('/admin/api/media', function(data) {
+        $loading.remove();
+        $.each(data, function(i, img) {
+          var $attachment = $('<a class="attachment">')
+            .attr('data-filepath', img.filepath)
+            .appendTo( $('<li>').appendTo($list) );
+          $('<img>')
+            .attr('src', img.filepath)
+            .appendTo($attachment);
+        });
+      });
+
+      mediaModal = $modal;
+    }
+  }
+
   $(function() {
-    $('.settings-menu > .content > .close').click(function() {
-      var $menu = $(this).parents('.settings-menu').first();
+    $(document).on('click', '.modal-window > .content > .close', function() {
+      var $menu = $(this).parents('.modal-window').first();
+      $menu.removeClass('-visible');
+    });
+
+    $(document).on('click', '[data-media-modal] .attachment', function() {
+      if (mediaModalCb !== null) mediaModalCb($(this).attr('data-filepath'));
+      var $menu = $(this).parents('.modal-window').first();
       $menu.removeClass('-visible');
     });
 
@@ -53,14 +93,14 @@
     $('[data-metatitle]').each(function() {
       var $this = $(this);
       $($this.attr('data-metatitle')).change(function() {
-        $this.attr('placeholder', metatitle($(this).val()));
+        $this.attr('placeholder', metaTitle($(this).val()));
       });
       $($this.attr('data-metatitle')).change();
     });
     $('[data-metadesc]').each(function() {
       var $this = $(this);
       $($this.attr('data-metadesc')).change(function() {
-        $this.attr('placeholder', metadesc($(this).val()));
+        $this.attr('placeholder', metaDesc($(this).val()));
       });
       $($this.attr('data-metadesc')).change();
     });
@@ -68,13 +108,13 @@
     $('[data-preview-metatitle]').each(function() {
       var $this = $(this);
       $('[name=title],[name=metatitle]').on('change keydown keyup', function() {
-        $this.text(metatitle($('[name=metatitle]').val()||$('[name=title]').val()));
+        $this.text(metaTitle($('[name=metatitle]').val()||$('[name=title]').val()));
       });
     });
     $('[data-preview-metadesc]').each(function() {
       var $this = $(this);
       $('[name=content],[name=metadesc]').on('change keydown keyup', function() {
-        $this.text(metadesc($('[name=metadesc]').val()||$('[name=content]').val()));
+        $this.text(metaDesc($('[name=metadesc]').val()||$('[name=content]').val()));
       });
     });
     $('[data-preview-metaurl]').each(function() {
@@ -99,9 +139,11 @@
         $('[data-menu]').removeClass('-visible');
       }
 
-      if (!$this.is('[data-open]') && !($this.is('.edit-post .settings-menu > .content') || $this.parents('.edit-post .settings-menu > .content').length > 0)) {
-        $('.edit-post .settings-menu').removeClass('-visible');
+      if (!$this.is('[data-open]') && !($this.is('.edit-post .modal-window > .content') || $this.parents('.edit-post .modal-window > .content').length > 0 || $this.parents('.mce-window').length > 0)) {
+        $('.edit-post .modal-window').removeClass('-visible');
       }
     });
   });
+
+  window.showMediaModal = showMediaModal;
 }(jQuery));

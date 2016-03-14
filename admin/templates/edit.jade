@@ -1,11 +1,11 @@
 extends _base
 
 append scripts
-  script(src='/static/js/tinymce/tinymce.min.js')
+  script(src='/admin/static/js/tinymce/tinymce.min.js')
   script.
     tinymce.init({
       selector: '[data-wysiwyg]',
-      content_css: '/static/css/editor.css',
+      content_css: '/admin/static/css/editor.css',
       menubar: false,
       plugins: 'link image code',
       toolbar: 'styleselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist | link unlink image | code',

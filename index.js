@@ -33,6 +33,7 @@ const theme = db.object.config.theme;
 
 app.disable('x-powered-by');
 app.use('/static', express.static('themes/'+theme+'/static'));
+app.use('/admin/static', express.static('admin/static'));
 app.use('/media', express.static(db.object.config.mediaUploadDir));
 app.use(session({ secret: db.object.config.secret, resave: false, saveUninitialized: false }));
 app.use(bodyParser.json());
@@ -160,7 +161,7 @@ app.get('/admin/regenerate', function(req, res) {
   }
 
   generateAllPosts(function() {
-    res.end( jade.renderFile('themes/'+theme+'/templates/admin/regenerated.jade', { data: {
+    res.end( jade.renderFile('admin/templates/regenerated.jade', { data: {
       title: "Admin",
       posts: db.object.posts
     }}) );
@@ -214,7 +215,7 @@ app.get('/admin/new', function(req, res) {
 
   var d = new Date();
 
-  res.end( jade.renderFile('themes/'+theme+'/templates/admin/edit.jade', { data: {
+  res.end( jade.renderFile('admin/templates/edit.jade', { data: {
     title: "Admin",
     page: "new",
     post: { date: d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate() },
@@ -249,7 +250,7 @@ app.get('/admin/delete/:slug?', function(req, res) {
   var post = db('posts').find({ slug: req.params.slug||'' });
 
   if (post) {
-    res.end( jade.renderFile('themes/'+theme+'/templates/admin/delete.jade', { data: {
+    res.end( jade.renderFile('admin/templates/delete.jade', { data: {
       title: "Admin",
       page: "delete",
       post: post
@@ -292,7 +293,7 @@ app.get('/admin/edit/:slug?', function(req, res) {
   var post = db('posts').find({ slug: req.params.slug||'' });
 
   if (post) {
-    res.end( jade.renderFile('themes/'+theme+'/templates/admin/edit.jade', { data: {
+    res.end( jade.renderFile('admin/templates/edit.jade', { data: {
       title: "Admin",
       page: "edit",
       post: post,
@@ -330,7 +331,7 @@ app.get('/admin/media', function(req, res) {
     return res.end();
   }
 
-  res.end( jade.renderFile('themes/'+theme+'/templates/admin/media.jade', { data: {
+  res.end( jade.renderFile('admin/templates/media.jade', { data: {
     title: "Admin",
     page: "media",
     media: db.object.media
@@ -355,14 +356,14 @@ app.get('/admin/api/media', function(req, res) {
 
 app.get('/admin', function(req, res) {
   if (req.session.loggedin) {
-    res.end( jade.renderFile('themes/'+theme+'/templates/admin/list.jade', { data: {
+    res.end( jade.renderFile('admin/templates/list.jade', { data: {
       title: "Admin",
       page: "list",
       posts: db.object.posts
     }}) );
   }
   else {
-    res.end( jade.renderFile('themes/'+theme+'/templates/admin/login.jade', { data: {
+    res.end( jade.renderFile('admin/templates/login.jade', { data: {
       title: "Login"
     }}) );
   }

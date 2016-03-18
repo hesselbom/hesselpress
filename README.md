@@ -6,7 +6,8 @@ Fast, safe, simple! Version 0.1.
 ![Screenshot](docs/screenshot.png "Screenshot of admin and generated example page")
 
 ## Prerequisite
-Needs redis installed and running.
+* Node
+* Needs Redis installed and running.
 
 ## Install
 

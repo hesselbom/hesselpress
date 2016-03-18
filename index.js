@@ -177,7 +177,7 @@ function findUniqueSlug(slug) {
 
 function stripHtml(html) {
   html = html.replace(/&nbsp;/g, ' ');
-  return entities.encode(striptags(html)).replace(/\s\s+/g, ' ');
+  return entities.decode(striptags(html)).replace(/\s\s+/g, ' ');
 }
 
 function metaTitle(title, fallback) {

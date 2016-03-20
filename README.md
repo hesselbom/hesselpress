@@ -92,7 +92,7 @@ You can set template settings if you create a .json file with the same name as t
       "options": [
         { "id": "option1", "name": "Option 1" },
         { "id": "option2", "name": "Option 2" }
-      ]
+      ],
       "defaultSelected": "all"
     }
   ],

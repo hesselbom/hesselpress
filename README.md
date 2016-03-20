@@ -27,6 +27,11 @@ const kapowcms = require('kapowcms');
 
 kapowcms.run();
 ```
+### Port
+You can also set what port to run KapowCMS from by giving it as a parameter to the __run__ method. Default is 3000.
+```javascript
+kapowcms.run([], 3000);
+```
 
 ## Run
 ```shell

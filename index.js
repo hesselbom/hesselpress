@@ -6,7 +6,7 @@ const mkdirp     = require('mkdirp');
 const path       = require('path');
 
 module.exports = {
-  run: function(kapowPlugins) {
+  run: function(kapowPlugins, port) {
     global.kapowRoot = path.resolve(__dirname);
     global.appRoot = path.resolve(global.appRoot);
     global.kapowPlugins = kapowPlugins;
@@ -76,8 +76,9 @@ module.exports = {
       });
     });
 
-    app.listen(3000, function() {
-      console.log('Example app listening on port 3000!');
+    port = port||3000;
+    app.listen(port, function() {
+      console.log('KapowCMS running on port '+port+'!');
     });
   }
 };

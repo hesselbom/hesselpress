@@ -5,7 +5,7 @@ npm-debug.log*
 .npm
 node_modules
 
-# Hesselpress
+# KapowCMS
 db.json
 uploads
 

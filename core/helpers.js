@@ -1,4 +1,5 @@
 const fs        = require('fs');
+const path      = require('path');
 const Entities  = require('html-entities').AllHtmlEntities;
 const striptags = require('striptags');
 
@@ -18,7 +19,7 @@ module.exports = {
   findUniqueFilename: function(name, base) {
     var ext = path.extname(name);
     name = name.substr(0, name.length - ext.length);
-    while (pathExists(path.join(base, name + ext))) {
+    while (this.pathExists(path.join(base, name + ext))) {
       var re = name.match(/-(\d+)$/);
       var n = parseInt(re ? re[1] : 1) + 1;
       name = (re ? name.substr(0, re.index) : name) + '-' + n;

@@ -25,4 +25,6 @@ html
     header.main-header
       a.logo(href='/'): h2= name
 
+    | !{generated.beforeContent}
     block body
+    | !{generated.afterContent}

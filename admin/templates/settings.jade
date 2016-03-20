@@ -1,0 +1,17 @@
+include _mixins
+extends _base
+block title
+  h1 Settings
+block body
+  .admin-page
+    form(method='post')
+      each field in data.fields
+        if field.type === '_container'
+          section.contained-fields
+            h3= field.name
+            each f in field.fields
+              +input(f, data.values[f.id])
+        else
+          +input(field, data.values[field.id])
+
+      input.main-button.-right(type='submit', value='Save')

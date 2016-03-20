@@ -1,13 +1,12 @@
 {
   "config": {
-    "name": "Hesselpress",
+    "name": "KapowCMS",
     "theme": "example",
     "domain": "localhost:3000",
-    "secret": "hesselpress",
+    "secret": "kapowcms",
     "template404": "_404",
     "username": "admin",
     "password": "admin",
-    "disqusid": "",
     "mediaUploadDir": "uploads/media",
     "acceptedMedia": [
       "jpg",

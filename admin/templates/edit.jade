@@ -1,3 +1,4 @@
+include _mixins
 extends _base
 
 append scripts
@@ -49,17 +50,7 @@ block body
           textarea(name='content', rows='20', data-wysiwyg)= data.post.content
 
       each field in data.customfields
-        if field.type === 'image'
-          label.image-field= field.name
-            p
-              input(type='hidden', name=field.id, value=data.post[field.id])
-              a.button.main-button.-small Select image
-              span.image
-                if data.post[field.id]
-                  img(src=data.post[field.id])
-        else
-          label= field.name
-            input(type='text', name=field.id, value=data.post[field.id])
+        +input(field, data.post[field.id])
 
       section.modal-window.-maxwidth(data-settings-modal)
         .content

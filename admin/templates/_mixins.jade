@@ -1,0 +1,28 @@
+mixin input(field, value)
+  if field.type === 'image'
+    label.image-field= field.name
+      p
+        input(type='hidden', name=field.id, value=value)
+        a.button.main-button.-small Select image
+        span.image
+          if value
+            img(src=value)
+
+  else if field.type === 'select'
+    label= field.name
+      span.styled-select: select(name=field.id)
+        each option in field.options
+          option(value=option.id, selected=option.id===value, disabled=option.disabled)= option.name
+
+  else if field.type === 'selectmultiple'
+    label= field.name
+      select(multiple, name=field.id, size=field.options.length>5?5:field.options.length)
+        each option in field.options
+          if value
+            option(value=option.id, selected=value.indexOf(option.id)>-1, disabled=option.disabled)= option.name
+          else
+            option(value=option.id, selected=field.defaultSelected==='all'&&!option.disabled, disabled=option.disabled)= option.name
+
+  else
+    label= field.name
+      input(type='text', name=field.id, value=value)

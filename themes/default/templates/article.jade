@@ -3,17 +3,3 @@ block body
   h1= post.title
   time #{post.date}
   | !{post.content}
-
-  if disqusid
-    #disqus_thread.comments
-    script.
-      var disqus_config = function () {
-        this.page.url = '#{post.canonical}';
-        this.page.identifier = '#{post.slug}';
-      };
-      (function() { // DON'T EDIT BELOW THIS LINE
-        var d = document, s = d.createElement('script');
-        s.src = '//#{disqusid}.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-      })();

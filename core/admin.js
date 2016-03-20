@@ -1,44 +1,60 @@
 const jade      = require('jade');
-const fs        = require('fs');
-const path      = require('path');
 const async     = require('async');
 const truncate  = require('truncate-html');
-const jsonfile  = require('jsonfile');
 
 const data      = require('./data');
 const helpers   = require('./helpers');
+const plugins   = require('./plugins');
 
-var templates = fs.readdirSync(data.getThemePath('templates'))
-  .filter(function(file) {
-    var ext = file.split('.').pop();
-    return fs.statSync(path.join(data.getThemePath('templates'), file)).isFile() && file[0] !== '_' && ext === 'jade';
-  })
-  .map(function(file) {
-    return file.substr(0, file.length-'.jade'.length);
+function getSettingsFields() {
+  var themes = data.getThemes(),
+    themesOptions = [];
+
+  themes.forEach(function(theme) {
+    themesOptions.push({
+      id: theme,
+      name: theme.charAt(0).toUpperCase() + theme.slice(1)
+    });
   });
 
-function getTemplateInfo(template) {
-  var path = data.getThemePath('templates/'+template+'.json');
-  if (helpers.pathExists(path)) {
-    return jsonfile.readFileSync(path);
-  }
-  return {
-    name: template.charAt(0).toUpperCase() + template.slice(1),
-    fields: [],
-    exclude: []
-  }
+  var fields = [
+    {
+      id: 'name',
+      name: 'Name',
+      type: 'text'
+    },
+    {
+      id: 'theme',
+      name: 'Theme',
+      type: 'select',
+      options: themesOptions
+    },
+    {
+      id: 'domain',
+      name: 'Domain',
+      type: 'text'
+    }
+  ];
+
+  fields = fields.concat(plugins.settings());
+
+  return fields;
 }
 
-function getTemplateName(template) {
-  return getTemplateInfo(template).name || "";
-}
-
-function getTemplateFields(template) {
-  return getTemplateInfo(template).fields || [];
-}
-
-function getTemplateExclude(template) {
-  return getTemplateInfo(template).exclude || [];
+function getSettingsValues() {
+  var fields = getSettingsFields();
+  var values = {};
+  fields.forEach(function(field) {
+    if (field.type === '_container') {
+      field.fields.forEach(function(field) {
+        values[field.id] = data.db.object.config[field.id];
+      });
+    }
+    else {
+      values[field.id] = data.db.object.config[field.id];
+    }
+  });
+  return values;
 }
 
 function isLoggedIn(req) {
@@ -48,12 +64,15 @@ function isLoggedIn(req) {
 function generatePost(slug, cb) {
   var post = data.db('posts').find({ slug: slug });
 
-  var html = jade.renderFile(data.getThemePath('templates/'+post.template+'.jade'), {
+  var html = jade.renderFile(data.getTemplate(post.template), {
     post: post,
     posts: data.db.object.posts,
-    disqusid: data.db.object.config.disqusid,
     name: data.db.object.config.name,
-    helpers: { truncate: truncate }
+    helpers: { truncate: truncate },
+    generated: {
+      beforeContent: plugins.render('beforeContent', post),
+      afterContent:  plugins.render('afterContent', post)
+    }
   });
 
   if (cb)
@@ -63,10 +82,19 @@ function generatePost(slug, cb) {
 }
 
 function generate404(cb) {
+  var post = {
+    title: '404',
+    template: '_404'
+  };
   var html = jade.renderFile(data.getThemePath('templates/'+data.db.object.config.template404+'.jade'), {
-    post: { title: '404' },
+    post: post,
     posts: data.db.object.posts,
-    helpers: { truncate: truncate }
+    name: data.db.object.config.name,
+    helpers: { truncate: truncate },
+    generated: {
+      beforeContent: plugins.render('beforeContent', post),
+      afterContent:  plugins.render('afterContent', post)
+    }
   });
 
   if (cb)
@@ -105,18 +133,18 @@ module.exports = {
 
   getLogin: function(req, res) {
     if (isLoggedIn(req)) {
-      res.end( jade.renderFile('admin/templates/list.jade', {
+      res.end( jade.renderFile(data.getAdminPath('templates/list.jade'), {
         data: {
-          title: "Admin",
-          page: "list",
+          title: 'Admin',
+          page: 'list',
           posts: data.db.object.posts
         },
-        helpers: { getTemplateName: getTemplateName }
+        helpers: { getTemplateName: data.getTemplateName.bind(data) }
       }) );
     }
     else {
-      res.end( jade.renderFile('admin/templates/login.jade', { data: {
-        title: "Login"
+      res.end( jade.renderFile(data.getAdminPath('templates/login.jade'), { data: {
+        title: 'Login'
       }}) );
     }
   },
@@ -128,8 +156,8 @@ module.exports = {
     }
 
     generateAllPosts(function() {
-      res.end( jade.renderFile('admin/templates/regenerated.jade', { data: {
-        title: "Admin",
+      res.end( jade.renderFile(data.getAdminPath('templates/regenerated.jade'), { data: {
+        title: 'Admin',
         posts: data.db.object.posts
       }}) );
     });
@@ -174,11 +202,11 @@ module.exports = {
 
     var d = new Date();
 
-    res.end( jade.renderFile('admin/templates/edit.jade', { data: {
-      title: "Admin",
-      page: "new",
+    res.end( jade.renderFile(data.getAdminPath('templates/edit.jade'), { data: {
+      title: 'Admin',
+      page: 'new',
       post: { date: d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate() },
-      templates: templates,
+      templates: data.getTemplates(),
       saved: typeof req.query.saved !== 'undefined',
       isnew: true,
       canonicalbase: 'http://'+data.db.object.config.domain+'/',
@@ -211,9 +239,9 @@ module.exports = {
     var post = data.db('posts').find({ slug: req.params.slug||'' });
 
     if (post) {
-      res.end( jade.renderFile('admin/templates/delete.jade', { data: {
-        title: "Admin",
-        page: "delete",
+      res.end( jade.renderFile(data.getAdminPath('templates/delete.jade'), { data: {
+        title: 'Admin',
+        page: 'delete',
         post: post
       }}) );
     }
@@ -240,7 +268,7 @@ module.exports = {
     post.generatedMetadesc = helpers.metaDesc(req.body.metadesc, req.body.content||'');
     post.canonical = 'http://'+data.db.object.config.domain+'/'+post.slug;
 
-    var customfields = getTemplateFields(post.template);
+    var customfields = data.getTemplateFields(post.template);
     customfields.forEach(function(field) {
       post[field.id] = req.body[field.id];
     });
@@ -259,15 +287,15 @@ module.exports = {
     var post = data.db('posts').find({ slug: req.params.slug||'' });
 
     if (post) {
-      res.end( jade.renderFile('admin/templates/edit.jade', { data: {
-        title: "Admin",
-        page: "edit",
+      res.end( jade.renderFile(data.getAdminPath('templates/edit.jade'), { data: {
+        title: 'Admin',
+        page: 'edit',
         post: post,
-        templates: templates,
+        templates: data.getTemplates(),
         saved: typeof req.query.saved !== 'undefined',
         canonicalbase: 'http://'+data.db.object.config.domain+'/',
-        customfields: getTemplateFields(post.template),
-        excludefields: getTemplateExclude(post.template)
+        customfields: data.getTemplateFields(post.template),
+        excludefields: data.getTemplateExclude(post.template)
       }}) );
     }
     else {
@@ -299,10 +327,51 @@ module.exports = {
       return res.end();
     }
 
-    res.end( jade.renderFile('admin/templates/media.jade', { data: {
-      title: "Admin",
-      page: "media",
+    res.end( jade.renderFile(data.getAdminPath('templates/media.jade'), { data: {
+      title: 'Admin',
+      page: 'media',
       media: data.db.object.media
+    }}) );
+  },
+
+  postSettings: function(req, res) {
+    if (!isLoggedIn(req)) {
+      res.writeHead(302, { 'location': '/admin' });
+      return res.end();
+    }
+
+    var fields = getSettingsFields();
+
+    fields.forEach(function(field) {
+      if (field.type === '_container') {
+        field.fields.forEach(function(field) {
+          data.db.object.config[field.id] = req.body[field.id];
+        });
+      }
+      else {
+        data.db.object.config[field.id] = req.body[field.id];
+      }
+    });
+
+    data.db.write();
+
+    generateAllPosts(function() {
+      res.writeHead(302, { 'location': '/admin/settings' });
+      res.end();
+    });
+  },
+
+  getSettings: function(req, res) {
+    if (!isLoggedIn(req)) {
+      res.writeHead(302, { 'location': '/admin' });
+      return res.end();
+    }
+
+    res.end( jade.renderFile(data.getAdminPath('templates/settings.jade'), { data: {
+      title: 'Admin',
+      page: 'settings',
+      fields: getSettingsFields(),
+      values: getSettingsValues()
     }}) );
   },
 

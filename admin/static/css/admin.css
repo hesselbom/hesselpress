@@ -77,10 +77,12 @@ form label { display: block; margin-bottom: 1em }
 form label > select { display: block; width: 100% }
 form label > input { display: block; width: 100%; height: 2.5em; padding: 0.5em }
 form label > textarea { display: block; width: 100%; padding: 0.5em }
+form label > select[multiple] option { padding: 0.5em }
 
 form label > input,
 form label > textarea,
 form label > .mce-panel,
+form label > select[multiple],
 .styled-select { border: 1px solid #e5e5e5; box-shadow: 0 1px 2px rgba(0,0,0,.04) }
 
 .styled-select {
@@ -188,6 +190,9 @@ form label > .mce-panel,
 .image-field {}
  .image-field .image { display: block; margin-top: 0.5em }
  .image-field .image > img { display: block; max-width: 10em; max-height: 10em }
+
+.contained-fields { border-left: 0.5em solid #444; background: #e0e0e0; padding: 1em; margin-bottom: 1em; margin-top: 2em }
+ .contained-fields > *:last-child { margin-bottom: 0 }
 
 @media screen and (min-width: 25em) { .media-list > li { width: 25% } }
 @media screen and (min-width: 30.0625em) { .media-list > li { width: 20% } }

@@ -25,7 +25,7 @@ html
         .menu(data-menu)
           a(data-togglemenu).fa.fa-close.close
           block menu
-            h2 Hesselpress
+            h2 KapowCMS
             ul.block-menu
               li(class=data.page == 'new'?'active':''): a(href='/admin/new')
                 span.fa.fa-pencil.fa-fw
@@ -36,6 +36,9 @@ html
               li(class=data.page == 'media'?'active':''): a(href='/admin/media')
                 span.fa.fa-image.fa-fw
                 | Media
+              li(class=data.page == 'settings'?'active':''): a(href='/admin/settings')
+                span.fa.fa-cogs.fa-fw
+                | Settings
             ul.bottommenu.block-menu
               li: a(href='/admin/logout')
                 span.fa.fa-arrow-left.fa-fw

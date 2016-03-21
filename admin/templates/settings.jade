@@ -7,7 +7,7 @@ block body
     form(method='post')
       each field in data.fields
         if field.type === '_container'
-          section.contained-fields
+          fieldset.contained-fields
             h3= field.name
             each f in field.fields
               +input(f, data.values[f.id])

@@ -50,7 +50,13 @@ block body
           textarea(name='content', rows='20', data-wysiwyg)= data.post.content
 
       each field in data.customfields
-        +input(field, data.post[field.id])
+        if field.type === '_container'
+          fieldset.contained-fields
+            h3= field.name
+            each f in field.fields
+              +input(f, data.post[f.id])
+        else
+          +input(field, data.post[field.id])
 
       section.modal-window.-maxwidth(data-settings-modal)
         .content

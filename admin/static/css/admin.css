@@ -191,7 +191,7 @@ form label > select[multiple],
  .image-field .image { display: block; margin-top: 0.5em }
  .image-field .image > img { display: block; max-width: 10em; max-height: 10em }
 
-.contained-fields { border-left: 0.5em solid #444; background: #e0e0e0; padding: 1em; margin-bottom: 1em; margin-top: 2em }
+.contained-fields { border: 0; border-left: 0.5em solid #444; background: #e0e0e0; padding: 1em; margin: 2em 0 1em 0 }
  .contained-fields > *:last-child { margin-bottom: 0 }
 
 @media screen and (min-width: 25em) { .media-list > li { width: 25% } }

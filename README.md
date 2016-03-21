@@ -3,7 +3,7 @@ Very simple cms tool with admin and static generated html files stored in Redis.
 
 Fast, safe, simple!
 
-![Screenshot](docs/screenshot.png "Screenshot of admin and generated example page")
+![Screenshot](https://github.com/hesselbom/kapowcms/blob/master/docs/screenshot.png "Screenshot of admin and generated example page")
 
 ## Prerequisite
 * Node

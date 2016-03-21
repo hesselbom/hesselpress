@@ -204,8 +204,8 @@ form label > select[multiple],
 @media screen and (max-width: 44em) {
  .admin-container { overflow: visible }
  .admin-container > .content { width: 100%; height: auto }
- .admin-container > .menu { z-index: 1; position: fixed; top: 0; bottom: 0; left: 0; display: none }
- .admin-container > .menu.-visible { display: block }
+ .admin-container > .menu { z-index: 1; position: fixed; top: 0; bottom: 0; left: 0; display: block; transform: translateX(-100%); opacity: 0; visibility: hidden; transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease }
+ .admin-container > .menu.-visible { transform: translateX(0%); opacity: 1; visibility: visible }
  .admin-container > .menu > .close { display: block; position: absolute; top: 0; right: 0; padding: 1em }
  .admin-container > .openmenu { display: block }
 

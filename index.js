@@ -56,6 +56,7 @@ module.exports = {
     app.get ('/admin/settings', admin.getSettings);
 
     app.get ('/admin/api/media', admin.api.getMedia);
+    app.delete('/admin/api/media', admin.api.deleteMedia);
 
     app.post('/admin', admin.postLogin);
     app.get ('/admin', admin.getLogin);

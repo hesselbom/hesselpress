@@ -9,7 +9,8 @@ block body
       ul.media-list
         each img in data.media
           li
-            .attachment
+            .attachment(data-media-image=img.path, title=img.title)
+              a.fa.fa-close.delete
               img(src='/media/'+img.filename)
 
     hr

@@ -63,6 +63,17 @@
     setTimeout(function() { mediaModal.removeAttr('data-just-opened') }, 0);
   }
 
+  function deleteMedia(path) {
+    $.ajax({
+      url: '/admin/api/media',
+      method: 'DELETE', 
+      data: { path: path }
+    })
+    .done(function(res) {
+      console.log(res);
+    });
+  }
+
   $(function() {
     $(document).on('click', '.modal-window > .content > .close', function() {
       var $menu = $(this).parents('.modal-window').first();
@@ -73,6 +84,14 @@
       if (mediaModalCb !== null) mediaModalCb($(this).attr('data-filepath'));
       var $menu = $(this).parents('.modal-window').first();
       $menu.removeClass('-visible');
+    });
+
+    $(document).on('click', '[data-media-image] > .delete', function() {
+      if (confirm('Are you sure you want to remove '+$(this).parent().attr('title')+'?')) {
+        var path = $(this).parent().attr('data-media-image');
+        $(this).parent().parent().remove();
+        deleteMedia(path);
+      }
     });
 
     $('[data-open]').click(function() {

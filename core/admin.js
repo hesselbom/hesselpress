@@ -390,6 +390,19 @@ module.exports = {
           filepath: '/media/' + img.filename
         }
       })));
+    },
+    deleteMedia: function(req, res) {
+      if (!isLoggedIn(req)) {
+        res.writeHead(302, { 'location': '/admin' });
+        return res.end();
+      }
+
+      var index = data.db('media').remove(function(img) {
+        return img.path === req.body.path;
+      });
+
+      res.setHeader('Content-Type', 'application/json');
+      res.send({ success: true });
     }
   }
 };

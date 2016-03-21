@@ -61,6 +61,15 @@ function isLoggedIn(req) {
   return req.session.loggedin;
 }
 
+function redirectLoggedIn(req, res) {
+  if (!isLoggedIn(req)) {
+    res.writeHead(302, { 'location': '/admin?url='+encodeURIComponent(req.url) });
+    res.end();
+    return true;
+  }
+  return false;
+}
+
 function generatePost(slug, cb) {
   var post = data.db('posts').find({ slug: slug });
 
@@ -127,7 +136,12 @@ module.exports = {
     if (req.body.username === data.db.object.config.username && req.body.password === data.db.object.config.password) {
       req.session.loggedin = true;
     }
-    res.writeHead(302, { 'location': '/admin' });
+
+    if (req.body.url)
+      res.writeHead(302, { 'location': req.body.url });
+    else
+      res.writeHead(302, { 'location': '/admin' });
+
     res.end();
   },
 
@@ -144,16 +158,14 @@ module.exports = {
     }
     else {
       res.end( jade.renderFile(data.getAdminPath('templates/login.jade'), { data: {
-        title: 'Login'
+        title: 'Login',
+        url: req.query.url
       }}) );
     }
   },
 
   getRegenerate: function(req, res) {
-    if (!isLoggedIn(req)) {
-      res.writeHead(302, { 'location': '/admin' });
-      return res.end();
-    }
+    if (redirectLoggedIn(req, res)) return;
 
     generateAllPosts(function() {
       res.end( jade.renderFile(data.getAdminPath('templates/regenerated.jade'), { data: {
@@ -170,10 +182,7 @@ module.exports = {
   },
 
   postNew: function(req, res) {
-    if (!isLoggedIn(req)) {
-      res.writeHead(302, { 'location': '/admin' });
-      return res.end();
-    }
+    if (redirectLoggedIn(req, res)) return;
 
     var post = data.db('posts').push({
       template: req.body.template,
@@ -195,10 +204,7 @@ module.exports = {
   },
 
   getNew: function(req, res) {
-    if (!isLoggedIn(req)) {
-      res.writeHead(302, { 'location': '/admin' });
-      return res.end();
-    }
+    if (redirectLoggedIn(req, res)) return;
 
     var d = new Date();
 
@@ -216,10 +222,7 @@ module.exports = {
   },
 
   postDelete: function(req, res) {
-    if (!isLoggedIn(req)) {
-      res.writeHead(302, { 'location': '/admin' });
-      return res.end();
-    }
+    if (redirectLoggedIn(req, res)) return;
 
     data.db('posts').remove(function(post) {
       return post.slug === req.params.slug;
@@ -232,10 +235,8 @@ module.exports = {
   },
 
   getDelete: function(req, res) {
-    if (!isLoggedIn(req)) {
-      res.writeHead(302, { 'location': '/admin' });
-      return res.end();
-    }
+    if (redirectLoggedIn(req, res)) return;
+
     var post = data.db('posts').find({ slug: req.params.slug||'' });
 
     if (post) {
@@ -251,10 +252,7 @@ module.exports = {
   },
 
   postEdit: function(req, res) {
-    if (!isLoggedIn(req)) {
-      res.writeHead(302, { 'location': '/admin' });
-      return res.end();
-    }
+    if (redirectLoggedIn(req, res)) return;
 
     var post = data.db('posts').find({ slug: req.params.slug||'' });
     post.template = req.body.template;
@@ -280,10 +278,8 @@ module.exports = {
   },
 
   getEdit: function(req, res) {
-    if (!isLoggedIn(req)) {
-      res.writeHead(302, { 'location': '/admin' });
-      return res.end();
-    }
+    if (redirectLoggedIn(req, res)) return;
+
     var post = data.db('posts').find({ slug: req.params.slug||'' });
 
     if (post) {
@@ -304,10 +300,7 @@ module.exports = {
   },
 
   postMedia: function(req, res) {
-    if (!isLoggedIn(req)) {
-      res.writeHead(302, { 'location': '/admin' });
-      return res.end();
-    }
+    if (redirectLoggedIn(req, res)) return;
 
     data.db('media').push({
       title: req.file.filename,
@@ -322,10 +315,7 @@ module.exports = {
   },
 
   getMedia: function(req, res) {
-    if (!isLoggedIn(req)) {
-      res.writeHead(302, { 'location': '/admin' });
-      return res.end();
-    }
+    if (redirectLoggedIn(req, res)) return;
 
     res.end( jade.renderFile(data.getAdminPath('templates/media.jade'), { data: {
       title: 'Admin',
@@ -335,10 +325,7 @@ module.exports = {
   },
 
   postSettings: function(req, res) {
-    if (!isLoggedIn(req)) {
-      res.writeHead(302, { 'location': '/admin' });
-      return res.end();
-    }
+    if (redirectLoggedIn(req, res)) return;
 
     var fields = getSettingsFields();
 
@@ -362,10 +349,7 @@ module.exports = {
   },
 
   getSettings: function(req, res) {
-    if (!isLoggedIn(req)) {
-      res.writeHead(302, { 'location': '/admin' });
-      return res.end();
-    }
+    if (redirectLoggedIn(req, res)) return;
 
     res.end( jade.renderFile(data.getAdminPath('templates/settings.jade'), { data: {
       title: 'Admin',
@@ -377,10 +361,7 @@ module.exports = {
 
   api: {
     getMedia: function(req, res) {
-      if (!isLoggedIn(req)) {
-        res.writeHead(302, { 'location': '/admin' });
-        return res.end();
-      }
+      if (redirectLoggedIn(req, res)) return;
 
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify(data.db('media').map(function(img) {
@@ -392,10 +373,7 @@ module.exports = {
       })));
     },
     deleteMedia: function(req, res) {
-      if (!isLoggedIn(req)) {
-        res.writeHead(302, { 'location': '/admin' });
-        return res.end();
-      }
+      if (redirectLoggedIn(req, res)) return;
 
       var index = data.db('media').remove(function(img) {
         return img.path === req.body.path;

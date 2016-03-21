@@ -3,6 +3,8 @@ block container
   .form-container
     h2.header Admin
     form(method='post')
+      if data.url
+        input(type='hidden', name='url', value=data.url)
       label Username
         input(type='text', name='username')
       label Password
